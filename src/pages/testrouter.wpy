@@ -1,0 +1,70 @@
+<style lang="scss">
+  $color: red;
+  .testscss {
+    color: $color;
+  }
+  .userinfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .userinfo-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+  }
+
+  .userinfo-nickname {
+    color: #aaa;
+  }
+</style>
+<template>
+  <view class="container">
+    <h1 class="testscss">路由跳转</h1>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import Panel from '@/components/panel' // alias example
+  import Counter from 'counter' // alias example
+  import List from '../components/list' // aliasFields example
+  import moduleA from 'module-a' // aliasFields ignore module example
+  import Group from '../components/group'
+  import Toast from 'wepy-com-toast'
+  import testMixin from '../mixins/test'
+
+  console.log('moduleA ignored: ', moduleA) // => moduleA ignored: {}
+
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'haha'
+    }
+    components = {
+
+    }
+
+    mixins = [testMixin]
+
+    data = {
+
+
+    }
+
+    computed = {
+
+    }
+
+    methods = {
+
+    }
+
+    events = {
+
+    }
+
+
+  }
+</script>
