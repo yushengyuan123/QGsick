@@ -1,44 +1,49 @@
 <style lang="less">
-  .userinfo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .map_container {
+
+    position: absolute;
+
+    top: 0;
+
+    bottom: 80px;
+
+    left: 0;
+
+    right: 0;
+
   }
 
-  .userinfo-avatar {
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 50%;
-  }
+  .map {
 
-  .userinfo-nickname {
-    color: #aaa;
+    width: 100%;
+
+    height: 100%;
+
   }
 </style>
 <template>
-  <view class="container">
-    <h1>恭喜看到页面</h1>
-    <p @tap = "jump">路由跳转测试</p>
+  <view class="map_container">
+    <map class="map" id="map" longitude="{{longitude}}" latitude="{{latitude}}" scale="14" show-location="true"
+         markers="{{markers}}" bindmarkertap="makertap"></map>
   </view>
 </template>
 
 <script>
-  import wepy from 'wepy'
-  import Panel from '@/components/panel' // alias example
-  import Counter from 'counter' // alias example
-  import List from '../components/list' // aliasFields example
-  import moduleA from 'module-a' // aliasFields ignore module example
-  import Group from '../components/group'
-  import Toast from 'wepy-com-toast'
-  import testMixin from '../mixins/test'
-
-  console.log('moduleA ignored: ', moduleA) // => moduleA ignored: {}
-
+  import wepy from 'wepy';
+  import Panel from '@/components/panel'; // alias example
+  import Counter from 'counter'; // alias example
+  import List from '../components/list'; // aliasFields example
+  import amapFile from '../libs/amap-wx';
+  import Group from '../components/group';
+  import Toast from 'wepy-com-toast';
+  import testMixin from '../mixins/test';
 
   export default class Index extends wepy.page {
+
     config = {
-      navigationBarTitleText: 'test'
-    }
+      navigationBarTitleText: 'QG疫情监控'
+    };
+
     components = {
       panel: Panel,
       counter1: Counter,
@@ -46,46 +51,85 @@
       list: List,
       group: Group,
       toast: Toast
-    }
+    };
 
-    mixins = [testMixin]
+    mixins = [testMixin];
 
     data = {
-
-    }
+      markersData: [],
+      mapData: {
+        markers: [],
+        latitude: '',
+        longitude: '',
+        textData: {}
+      }
+    };
 
     computed = {
-      now () {
-        return +new Date()
+      now() {
+        return +new Date();
       }
+    };
+
+    onLoad() {
+      let that = this;
+      let myAmapFun = new amapFile.AMapWX({ key: '2ecefbebf40f879558c57c72032c153e' });
+      myAmapFun.getPoiAround({
+        // iconPathSelected: '选中 marker 图标的相对路径', //如：..­/..­/img/marker_checked.png
+        // iconPath: '未选中 marker 图标的相对路径', //如：..­/..­/img/marker.png
+        success: function(mapData) {
+          that.markersData = mapData.markers;
+          that.setData({
+            markers: that.markersData
+          });
+          that.setData({
+            latitude: that.markersData[0].latitude
+          });
+          that.setData({
+            longitude: that.markersData[0].longitude
+          });
+          // that.showMarkerInfo(that.markersData, 0);
+        },
+
+        fail: function(info) {
+          wx.showModal({ title: info.errMsg });
+        }
+      });
     }
 
     methods = {
-      jump() {
-        console.log('我执行了jump')
-        wx.navigateTo({
-          url: 'testrouter'  //跳转地址
-        })
-      }
+      makertap(e) {
+        let id = e.markerId;
+        this.showMarkerInfo(this.markersData, id);
+        this.changeMarkerColor(this.markersData, id);
+      },
 
-    }
+      showMarkerInfo(mapData, i) {
+        let that = this;
+        that.setData({
+          textData: {
+            name: mapData[i].name,
+            desc: mapData[i].address
+          }
+        });
+      },
 
-    onLoad() {
-      let self = this
-      this.$parent.getUserInfo(function (userInfo) {
-        if (userInfo) {
-          self.userInfo = userInfo
+      changeMarkerColor(mapData, i) {
+        let that = this;
+
+        let markers = [];
+        for (let j = 0; j < mapData.length; j++) {
+          if (j === i) {
+            mapData[j].iconPath = '选中 marker 图标的相对路径'; //如：..­/..­/img/marker_checked.png
+          } else {
+            mapData[j].iconPath = '未选中 marker 图标的相对路径'; //如：..­/..­/img/marker.png
+          }
+          markers.push(mapData [j]);
         }
-        self.normalTitle = '标题已被修改'
-
-        self.setTimeoutTitle = '标题三秒后会被修改'
-        setTimeout(() => {
-          self.setTimeoutTitle = '到三秒了'
-          self.$apply()
-        }, 3000)
-
-        self.$apply()
-      })
-    }
-  }
+        that.setData({
+          markers: markers
+        });
+      }
+    };
+  };
 </script>

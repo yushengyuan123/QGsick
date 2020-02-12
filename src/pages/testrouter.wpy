@@ -1,4 +1,7 @@
 <style lang="scss">
+  @function rpx($value) {
+    @return $value * 1rpx;
+  }
   $color: red;
   .testscss {
     color: $color;
@@ -10,7 +13,7 @@
   }
 
   .userinfo-avatar {
-    width: 80rpx;
+    width: rpx(80);
     height: 80rpx;
     border-radius: 50%;
   }
