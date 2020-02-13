@@ -1,0 +1,95 @@
+<style lang="scss">
+  @import "../tools/css/sharecss";
+  $width: 90%;
+
+  .infect-around-container {
+    @include share-css;
+    display: block;
+    height: rpx(459);
+    width: rpx(550);
+    top: 40%;
+    left: 50%;
+    z-index: 100;
+    margin-left: - rpx(275);
+    margin-top: - rpx((200));
+    box-shadow:0px 24px 24px 0px rgba(0,0,0,0.3),0px 0px 24px 0px rgba(0,0,0,0.22);
+    border-radius:9px;
+    background-color: white;
+  }
+
+  .notice-container {
+    $height: rpx(58) !global;
+    @include height_width_margin($height, $width);
+    @mixin share-css {
+      height: 100%;
+      line-height: $height;
+      color: #5CA2FA;
+    }
+    margin-top: rpx(12);
+
+    .notice-title {
+      @include share-css;
+      float: left;
+    }
+
+    .notice-cancel-btn {
+      @include share-css;
+      float: right;
+      font: {
+        size: rpx(46);
+      };
+    }
+  }
+
+  .image-container {
+    $height: rpx(230) !global;
+    @include height_width_margin($height, $width);
+    margin-bottom: rpx(30);
+
+    image {
+      display: block;
+      @include height_width_margin(100%, 60%);
+    }
+  }
+
+  .infect-warning {
+    @include height_width_margin(auto, $width);
+    color: #EA6F6F;
+    font: {
+      size: rpx(29);
+    };
+  }
+
+</style>
+<template>
+  <view class="infect-around-container">
+      <view class="notice-container">
+        <view class="notice-title">提示</view>
+        <view class="notice-cancel-btn">×</view>
+      </view>
+
+    <view class="image-container">
+      <image src="../tools/image/health@2x.png"></image>
+    </view>
+
+    <view class="infect-warning">你附近存在感染患者或者密切接触的人，即将有感染风险，请不要近距离接触。</view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class infectAlert extends wepy.component {
+    props = {};
+
+    data = {
+    };
+
+    events = {};
+
+    watch = {};
+
+    methods = {
+
+    };
+  }
+</script>

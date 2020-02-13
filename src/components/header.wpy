@@ -1,0 +1,72 @@
+<style lang="scss">
+  @import "../tools/css/sharecss";
+
+  .header-container {
+    @include share-css;
+    @mixin share-inline {
+      display: inline-block;
+      height: 100%;
+      line-height: rpx(90);
+    }
+    height: rpx(90);
+    width: 90%;
+    left: 50%;
+    top: rpx(50);
+    margin-left: -45%;
+    z-index: 1000;
+    background-color: white;
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.16);
+    border-radius: 8px;
+    text-align: center;
+
+    .header-title {
+      height: rpx(90);
+      font: {
+        size: rpx(35);
+      }
+      line-height: rpx(90);
+      color: #5CA2FA;
+      margin-left:auto;
+    }
+
+    .history-record {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      margin-top: rpx(4.5);
+      width: rpx(90);
+    }
+  }
+
+
+</style>
+
+<template>
+  <view class="header-container">
+    <view class="header-title">抗疫系统</view>
+    <image class="history-record" src="../tools/image/history.png" @tap="toHistory"></image>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class header extends wepy.component {
+    props = {};
+
+    data = {};
+
+    events = {};
+
+    watch = {};
+
+    methods = {
+      toHistory() {
+        wepy.navigateTo({
+          url: '/pages/testrouter'
+        })
+      }
+    };
+  }
+</script>

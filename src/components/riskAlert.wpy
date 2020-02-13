@@ -1,0 +1,104 @@
+<style lang="scss">
+  @import "../tools/css/sharecss";
+
+  .alert-infect-container {
+    @include share-css;
+    display: block;
+    height: rpx(413);
+    width: rpx(550);
+    top: 40%;
+    left: 50%;
+    z-index: 100;
+    margin-left: - rpx(275);
+    margin-top: - rpx((200));
+    box-shadow:0px 24px 24px 0px rgba(0,0,0,0.3),0px 0px 24px 0px rgba(0,0,0,0.22);
+    border-radius:9px;
+    background-color: white;
+  }
+
+  .alert-time {
+    height: rpx(28);
+    width: 82%;
+    text-align: left;
+    line-height: rpx(28);
+    margin: rpx(40) auto auto;
+    color:rgba(118,118,118,1);
+    font: {
+      size: rpx(28);
+    };
+  }
+
+  .infected-percent {
+    height: rpx(72);
+    width: 82%;
+    margin: auto;
+    line-height: rpx(72);
+    text-align: left;
+    color:rgba(234,111,111,1);
+    font: {
+      size: rpx(30);
+    };
+  }
+
+  .infected-percentage {
+    height: rpx(170);
+    text-align: center;
+    font-size: rpx(105);
+    color: #EB1F1F;
+    line-height: rpx(160);
+  }
+
+  .infected-notice {
+    height: rpx(60);
+    width: 82%;
+    margin: auto;
+    line-height: rpx(60);
+    text-align: left;
+    color:rgba(234,111,111,1);
+    font: {
+      size: rpx(30);
+    };
+  }
+
+  .cancle-btn {
+    position: absolute;
+    height: rpx(30);
+    width: rpx(30);
+    color: #5CA2FA;
+    top: rpx(23);
+    right: rpx(23);
+    font-size: rpx(49);
+    text-align: center;
+    line-height: rpx(30);
+  }
+
+
+
+</style>
+<template>
+  <view class="alert-infect-container">
+    <view class="cancle-btn">×</view>
+    <view class="alert-time">2020/02/02/14:08</view>
+    <view class="infected-percent">感染风险</view>
+    <view class="infected-percentage">90%</view>
+    <view class="infected-notice">感染风险极高，请自行在家隔离。</view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class riskAlert extends wepy.component {
+    props = {};
+
+    data = {
+    };
+
+    events = {};
+
+    watch = {};
+
+    methods = {
+
+    };
+  }
+</script>

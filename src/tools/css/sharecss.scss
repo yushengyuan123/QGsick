@@ -1,0 +1,33 @@
+@mixin share-css {
+  position: fixed;
+  z-index: 1000;
+}
+
+@mixin block-element {
+  text-align: center;
+}
+
+@mixin inline-block {
+  display: inline-block;
+  vertical-align: top;
+}
+
+@mixin background-image($imageUrl) {
+  background-image: url($imageUrl);
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+@mixin height_width_margin($height, $width) {
+  height: $height;
+  width: $width;
+  margin: auto;
+}
+
+@function rpx($value) {
+  @return $value * 1rpx;
+}
+
+@function image($url) {
+  @return ""
+}

@@ -1,49 +1,132 @@
 <style lang="scss">
-  @function rpx($value) {
-    @return $value * 1rpx;
-  }
-  $color: red;
-  .testscss {
-    color: $color;
-  }
-  .userinfo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  @import "../tools/css/sharecss";
+  .history-container {
+    height: 100vh;
   }
 
-  .userinfo-avatar {
-    width: rpx(80);
-    height: 80rpx;
-    border-radius: 50%;
+  .circle-container {
+    position: absolute;
+    top: 0;
+    height: 177px;
+    width: 100%;
+    background:linear-gradient(360deg,rgba(92,162,250,1) 0%,rgba(140,188,249,1) 100%);
+    border-radius: 0 0 15% 15%;
+    z-index: -1;
   }
 
-  .userinfo-nickname {
-    color: #aaa;
+  .history-title {
+    height: 28px;
+    width: 80px;
+    margin: auto;
+    color: white;
+    padding-top: 30px;
+    margin: {
+      bottom: 55px;
+    };
+    font: {
+      size: 20px;
+    };
   }
+
+  .history-record-container {
+    height:159px;
+    width: 85%;
+    margin: auto auto 25px;
+    box-shadow:0px 2px 5px -1px rgba(0,0,0,0.5);
+    border-radius:9px;
+    background: {
+      color: white;
+    };
+  }
+
+  .history-record-title-container {
+    @mixin share-inline {
+      height: 100%;
+      line-height: 22px;
+    }
+    height: 22px;
+    width: calc(100% - 36px);
+    margin: auto;
+    padding-top: 13px;
+    .history-record-title {
+      @include share-inline;
+      float: left;
+      color:rgba(234,111,111,1);
+      font: {
+        size: 16px;
+      };
+    }
+
+    .history-record-time {
+      @include share-inline;
+      float: right;
+      color:rgba(118,118,118,1);
+      font: {
+        size: 14px;
+      };
+    }
+  }
+
+  .percent {
+    height: 91px;
+    width: 120px;
+    margin: auto;
+    line-height: 91px;
+    text-align: center;
+    color:rgba(235,31,31,1);
+    font: {
+      size: 50px;
+    };
+  }
+
+  .warning {
+    height: 20px;
+    margin-left: 19px;
+    line-height: 20px;
+    color:rgba(234,111,111,1);
+  }
+
 </style>
 <template>
-  <view class="container">
-    <h1 class="testscss">路由跳转</h1>
+  <view class="history-container">
+    <view class="circle-container"></view>
+    <view class="history-title">历史纪录</view>
+    <view class="history-record-container">
+      <view class="history-record-title-container">
+        <view class="history-record-title">感染风险</view>
+        <view class="history-record-time">2020/02/02/14:08</view>
+      </view>
+      <view class="percent">66%</view>
+      <view class="warning">感染风险极高请自行在家隔离</view>
+    </view>
+
+    <view class="history-record-container">
+      <view class="history-record-title-container">
+        <view class="history-record-title">感染风险</view>
+        <view class="history-record-time">2020/02/02/14:08</view>
+      </view>
+      <view class="percent">66%</view>
+      <view class="warning">感染风险极高请自行在家隔离</view>
+    </view>
+
+    <view class="history-record-container">
+      <view class="history-record-title-container">
+        <view class="history-record-title">感染风险</view>
+        <view class="history-record-time">2020/02/02/14:08</view>
+      </view>
+      <view class="percent">66%</view>
+      <view class="warning">感染风险极高请自行在家隔离</view>
+    </view>
   </view>
 </template>
 
 <script>
   import wepy from 'wepy'
-  import Panel from '@/components/panel' // alias example
-  import Counter from 'counter' // alias example
-  import List from '../components/list' // aliasFields example
-  import moduleA from 'module-a' // aliasFields ignore module example
-  import Group from '../components/group'
-  import Toast from 'wepy-com-toast'
   import testMixin from '../mixins/test'
 
-  console.log('moduleA ignored: ', moduleA) // => moduleA ignored: {}
-
-
-  export default class Index extends wepy.page {
+  export default class history extends wepy.page {
     config = {
-      navigationBarTitleText: 'haha'
+      navigationBarTitleText: '历史记录'
     }
     components = {
 

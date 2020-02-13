@@ -1,0 +1,101 @@
+<style lang="scss">
+  @import "../tools/css/sharecss";
+
+  .alert-container {
+    @include share-css;
+    display: block;
+    height: rpx(370);
+    width: rpx(550);
+    top: 40%;
+    left: 50%;
+    z-index: 100;
+    margin-left: - rpx(275);
+    margin-top: - rpx((200));
+    box-shadow:0px 24px 24px 0px rgba(0,0,0,0.3),0px 0px 24px 0px rgba(0,0,0,0.22);
+    border-radius:9px;
+    background-color: white;
+  }
+
+  .alert-none {
+    display: none;
+  }
+
+  .notice-title {
+    @include block-element;
+    height: rpx(100);
+    line-height: rpx(100);
+  }
+
+  .notice-content {
+    height: rpx(170);
+    width: 80%;
+    margin: auto;
+    text-align: left;
+    color:rgba(0,0,0,0.54);
+    font: {
+      size: rpx(27);
+    }
+  }
+
+  .btn-container {
+    @mixin btn-share {
+      height: rpx(60);
+      width: rpx(170);
+      line-height: rpx(60);
+      border-radius:3px;
+      font: {
+        size: rpx(28);
+      };
+    }
+    text-align: center;
+    width: 80%;
+    margin: auto;
+    .disagree-btn {
+      @include btn-share;
+      float: left;
+      background-color: white;
+      color: black;
+      border:1px solid rgba(224,224,224,1);
+    }
+
+    .agree-btn {
+      @include btn-share;
+      float: right;
+      background-color: #3CA8F8;
+      color: white;
+    }
+  }
+
+
+</style>
+<template>
+  <view class="{{isAgree ? 'alert-container' : 'alert-none'}}">
+    <view class="notice-title">提示</view>
+    <view class="notice-content">本APP采集的数据仅用于疫情防控和支撑研究，不用于其他用途。您是否同意使用您的定位数据？同意则开始运行，不同意则退出。</view>
+    <view class="btn-container">
+      <view class="disagree-btn" @tap="Agree">不同意</view>
+      <view class="agree-btn" @tap="Agree">同意</view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class initAlert extends wepy.component {
+    props = {};
+
+    data = {
+      isAgree: false
+    };
+
+    events = {};
+
+    watch = {};
+
+    methods = {
+      Agree(e) {
+        this.isAgree = false
+      }
+    };
+  }
+</script>
