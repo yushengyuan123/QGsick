@@ -29,6 +29,7 @@
   import header from '../components/header';
   import riskAlert from '../components/riskAlert'
   import infectAlert from '../components/infectAlert'
+  import {map} from '../tools/util/generateMap';
   import amapFile from '../libs/amap-wx';
   import {GetSickData} from '../tools/api/getSickData';
   import testMixin from '../mixins/test';
@@ -65,32 +66,8 @@
     };
 
     onLoad() {
-      GetSickData.getSickDate().then((res) => {
-        console.log(res)
-      })
-      let that = this;
-      let myAmapFun = new amapFile.AMapWX({ key: '2ecefbebf40f879558c57c72032c153e' });
-      myAmapFun.getPoiAround({
-        // iconPathSelected: '选中 marker 图标的相对路径', //如：..­/..­/img/marker_checked.png
-        // iconPath: '未选中 marker 图标的相对路径', //如：..­/..­/img/marker.png
-        success: function(mapData) {
-          that.markersData = mapData.markers;
-          that.setData({
-            markers: that.markersData
-          });
-          that.setData({
-            latitude: that.markersData[0].latitude
-          });
-          that.setData({
-            longitude: that.markersData[0].longitude
-          });
-          // that.showMarkerInfo(that.markersData, 0);
-        },
+      map.createMap(this)
 
-        fail: function(info) {
-          wx.showModal({ title: info.errMsg });
-        }
-      });
     }
 
     methods = {

@@ -8,7 +8,7 @@ export function getResData(data) {
     } else {
       return {
         isSuccess: true,
-        data: data ? data : null,
+        data: data.data ? data.data : null,
         message: data.message ? data.message : null
       }
     }
