@@ -5,7 +5,7 @@
   .infect-around-container {
     @include share-css;
     display: block;
-    height: rpx(459);
+    height: rpx(450);
     width: rpx(550);
     top: 40%;
     left: 50%;
@@ -15,6 +15,10 @@
     box-shadow:0px 24px 24px 0px rgba(0,0,0,0.3),0px 0px 24px 0px rgba(0,0,0,0.22);
     border-radius:9px;
     background-color: white;
+  }
+
+  .infect-around-none-container {
+    display: none;
   }
 
   .notice-container {
@@ -54,6 +58,7 @@
 
   .infect-warning {
     @include height_width_margin(auto, $width);
+    text-align: center;
     color: #EA6F6F;
     font: {
       size: rpx(29);
@@ -62,34 +67,49 @@
 
 </style>
 <template>
-  <view class="infect-around-container">
+  <view class="{{isVisible ? 'infect-around-container' : 'infect-around-none-container'}}">
       <view class="notice-container">
         <view class="notice-title">提示</view>
-        <view class="notice-cancel-btn">×</view>
+        <view class="notice-cancel-btn" @tap="cancel">×</view>
       </view>
 
     <view class="image-container">
       <image src="../tools/image/health@2x.png"></image>
     </view>
 
-    <view class="infect-warning">你附近存在感染患者或者密切接触的人，即将有感染风险，请不要近距离接触。</view>
+    <view class="infect-warning">你附近存在感染患者或者密切接触的人即将有感染风险，请不要近距离接触。</view>
   </view>
 </template>
 <script>
   import wepy from 'wepy';
 
   export default class infectAlert extends wepy.component {
-    props = {};
-
-    data = {
+    props = {
+      isVisible: {
+        type: Boolean,
+        twoway: true
+      }
     };
 
-    events = {};
+    data = {
+      isShow: true
+    };
 
-    watch = {};
+    events = {
+    };
+
+    onLoad() {
+
+    }
+
+    watch = {
+
+    };
 
     methods = {
-
+      cancel() {
+        this.isVisible = false
+      }
     };
   }
 </script>

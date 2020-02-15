@@ -73,19 +73,20 @@
     <view class="notice-title">提示</view>
     <view class="notice-content">本APP采集的数据仅用于疫情防控和支撑研究，不用于其他用途。您是否同意使用您的定位数据？同意则开始运行，不同意则退出。</view>
     <view class="btn-container">
-      <view class="disagree-btn" @tap="Agree">不同意</view>
-      <view class="agree-btn" @tap="Agree">同意</view>
+      <view class="disagree-btn" @tap="Agree('NO')">不同意</view>
+      <view class="agree-btn" @tap="Agree('YES')">同意</view>
     </view>
   </view>
 </template>
 <script>
   import wepy from 'wepy';
+  import {Location} from '../tools/util/getLocation';
 
   export default class initAlert extends wepy.component {
     props = {};
 
     data = {
-      isAgree: false
+      isAgree: true
     };
 
     events = {};
@@ -93,7 +94,11 @@
     watch = {};
 
     methods = {
-      Agree(e) {
+      Agree(type) {
+        console.log(type)
+        if(type === 'YES') {
+          Location.getLocation(this)
+        }
         this.isAgree = false
       }
     };

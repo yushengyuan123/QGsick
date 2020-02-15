@@ -11,7 +11,7 @@ export class getLocation {
       type: 'gcj02',//默认wgs84是全球定位系统获取的坐标，gcj02是国家测绘局给出的坐标
       success: (res) => {
         console.log(res)
-        // console.log('经度' + res.longitude + '，纬度' + res.latitude);
+        console.log('经度' + res.longitude + '，纬度' + res.latitude);
         _this.setData({
           latitude: res.latitude,
           longitude: res.longitude

@@ -16,6 +16,10 @@
     background-color: white;
   }
 
+  .alert-infect-none-container {
+    display: none;
+  }
+
   .alert-time {
     height: rpx(28);
     width: 82%;
@@ -76,22 +80,31 @@
 
 </style>
 <template>
-  <view class="alert-infect-container">
+  <view class="{{risk.isShow ? 'alert-infect-container' : 'alert-infect-none-container'}}">
     <view class="cancle-btn">×</view>
-    <view class="alert-time">2020/02/02/14:08</view>
+    <view class="alert-time">{{risk.date}}</view>
     <view class="infected-percent">感染风险</view>
-    <view class="infected-percentage">90%</view>
-    <view class="infected-notice">感染风险极高，请自行在家隔离。</view>
+    <view class="infected-percentage">{{risk.percent}}%</view>
+    <view class="infected-notice">{{risk.description}}</view>
   </view>
 </template>
 <script>
   import wepy from 'wepy';
 
   export default class riskAlert extends wepy.component {
-    props = {};
+    props = {
+      risk: {
+        type: Object,
+        twoway: true
+      }
+    };
 
     data = {
     };
+
+    onLoad() {
+      console.log(this.risk)
+    }
 
     events = {};
 
