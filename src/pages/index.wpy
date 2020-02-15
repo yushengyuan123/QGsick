@@ -12,14 +12,34 @@
     width: 100%;
     height: 100%;
   }
+
+  .img_box {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .img_box image {
+    width: 100%;
+    height: 100%;
+  }
 </style>
 <template>
   <view class="map_container">
-<!--    <intiAlert></intiAlert>-->
+    <!--    <intiAlert></intiAlert>-->
     <header></header>
-    <infectAlert></infectAlert>
-    <map class="map" id="map" longitude="{{longitude}}" latitude="{{latitude}}" scale="14" show-location="true"
-         markers="{{markers}}" bindmarkertap="makertap"></map>
+    <map
+      id="myMap"
+      style="width: 100%; height: 100%;"
+      latitude="{{22.563050756359683}}"
+      longitude="{{113.34090874265604}}"
+      markers="{{markers}}"
+      show-location="true"
+      bindmarkertap="makertap"
+      polygons="{{polygons}}">
+    </map>
   </view>
 </template>
 
@@ -27,11 +47,11 @@
   import wepy from 'wepy';
   import intiAlert from '../components/intiAlert';
   import header from '../components/header';
-  import riskAlert from '../components/riskAlert'
-  import infectAlert from '../components/infectAlert'
-  import {map} from '../tools/util/generateMap';
-  import amapFile from '../libs/amap-wx';
-  import {GetSickData} from '../tools/api/getSickData';
+  import riskAlert from '../components/riskAlert';
+  import infectAlert from '../components/infectAlert';
+  import {Location} from '../tools/util/getLocation'
+  import { GetSickData } from '../tools/api/getSickData';
+  import { mapDraw } from '../tools/util/sickLabel';
   import testMixin from '../mixins/test';
 
   export default class Index extends wepy.page {
@@ -49,14 +69,17 @@
 
     mixins = [testMixin];
 
+
     data = {
-      markersData: [],
-      mapData: {
-        markers: [],
-        latitude: '',
-        longitude: '',
-        textData: {}
-      }
+      latitude: null,
+      longitude: null,
+      markers: [{
+        id: 1,
+        latitude: 23.099994,
+        longitude: 113.324520,
+        name: '腾讯'
+      }],
+      polygons: []
     };
 
     computed = {
@@ -65,44 +88,28 @@
       }
     };
 
+    onReady() {
+
+    }
+
     onLoad() {
-      map.createMap(this)
+      Location.getLocation(this)
+
+
+
+      //获取当前的地理位置、速度
+      // GetSickData.getSickDate().then((res) => {
+      //   let temp = mapDraw.drawRegion(res.data, this)
+      //   console.log(temp)
+      //   console.log(this.data.polygons);
+      // });
+
 
     }
 
     methods = {
-      makertap(e) {
-        let id = e.markerId;
-        this.showMarkerInfo(this.markersData, id);
-        this.changeMarkerColor(this.markersData, id);
-      },
 
-      showMarkerInfo(mapData, i) {
-        let that = this;
-        that.setData({
-          textData: {
-            name: mapData[i].name,
-            desc: mapData[i].address
-          }
-        });
-      },
-
-      changeMarkerColor(mapData, i) {
-        let that = this;
-
-        let markers = [];
-        for (let j = 0; j < mapData.length; j++) {
-          if (j === i) {
-            mapData[j].iconPath = '选中 marker 图标的相对路径'; //如：..­/..­/img/marker_checked.png
-          } else {
-            mapData[j].iconPath = '未选中 marker 图标的相对路径'; //如：..­/..­/img/marker.png
-          }
-          markers.push(mapData [j]);
-        }
-        that.setData({
-          markers: markers
-        });
-      }
     };
-  };
+  }
+  ;
 </script>
