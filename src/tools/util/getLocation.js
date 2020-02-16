@@ -20,6 +20,13 @@ export class getLocation {
     })
   }
 
+  //每5分钟获取一次用户的地理位置
+  circularGetLocation(_this) {
+    setInterval(() => {
+      this.getLocation(_this)
+    }, 5000)
+  }
+
 }
 
 export const Location = new getLocation();

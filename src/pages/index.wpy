@@ -56,6 +56,7 @@
   import {Location} from '../tools/util/getLocation'
   import { GetSickData } from '../tools/api/getSickData';
   import { mapDraw } from '../tools/util/sickLabel';
+  import {user} from '../tools/util/Login';
   import testMixin from '../mixins/test';
 
   export default class Index extends wepy.page {
@@ -100,7 +101,13 @@
     }
 
     onLoad() {
+      user.loginWx().then((res) => {
+        console.log(res)
+        console.log(user.getCode())
+      })
       Location.getLocation(this)
+
+      // Location.circularGetLocation(this)
 
       //获取当前的地理位置、速度
       // GetSickData.getSickDate().then((res) => {

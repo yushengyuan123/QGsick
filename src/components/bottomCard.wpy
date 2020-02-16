@@ -1,14 +1,28 @@
 <style lang="scss">
   @import "../tools/css/sharecss";
 
-  .bottom-card-container {
-    @include height_width_margin(rpx(420), 100%);
+  .bottom-card-none-container {
+    @include height_width_margin(0, 100%);
+    display: block;
     position: fixed;
     bottom: 0;
     z-index: 100;
     background: rgba(255, 255, 255, 1);
     box-shadow: 0px -3px 6px rgba(0, 0, 0, 0.12);
     border-radius: 16px 16px 0px 0px;
+    transition: height 1.5s;
+  }
+
+  .bottom-card-container {
+    @include height_width_margin(rpx(420), 100%);
+    display: block;
+    position: fixed;
+    bottom: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0px -3px 6px rgba(0, 0, 0, 0.12);
+    border-radius: 16px 16px 0px 0px;
+    transition: height 1.5s;
   }
 
   .shrink-container {
@@ -24,53 +38,82 @@
 
   .description {
     @include height_width_margin(auto, 90%);
-    $height: rpx(30) !global;
-    .infect-source-site-title {
-      max-width: 50%;
-      text-align: center;
-      background:rgba(92,162,250,1);
-      opacity:1;
-      border-radius:8px;
-      color: white;
+    .description-inner-container {
+      @include height_width_margin(rpx(50), 100%);
+      margin-bottom: rpx(6);
+      .infect-source-site-title {
+        height: 100%;
+        padding-left: rpx(20);
+        padding-right: rpx(20);
+        line-height: rpx(50);
+        float: left;
+        text-align: center;
+        background:rgba(92,162,250,1);
+        opacity:1;
+        border-radius:8px;
+        color: white;
+        font-size: 12px;
+      }
     }
   }
 
   .percent-container {
-    $height: rpx(100) !global;
+    $height: rpx(120) !global;
     @include height_width_margin($height, 90%);
     line-height: $height;
     text-align: center;
     color: #E44B04;
-    font-size: rpx(100);
+    font-size: 40px;
   }
 
-
-
+  .time {
+    $height: rpx(50) !global;
+    @include height_width_margin($height, 90%);
+    line-height: $height;
+    text-align: left;
+    color: #999999;
+    font-size: rpx(28);
+   }
 </style>
 <template>
-  <view class="bottom-card-container">
-    <view class="shrink-container">
+  <view class="{{isShow ? 'bottom-card-container' : 'bottom-card-none-container'}}">
+    <view class="shrink-container" @tap="cancel">
       <view class="line"></view>
       <view class="line"></view>
       <view class="line"></view>
     </view>
 
     <view class="description">
-      <view class="infect-source-site-title">感染风险源地点</view>
-      <view class="infect-source-site-title" style="background-color: white;color: black">广州大学城体育中心</view>
-      <view class="infect-source-site-title">感染风险</view>
+      <view class="description-inner-container">
+        <view class="infect-source-site-title">感染风险源地点</view>
+      </view>
+      <view class="description-inner-container">
+        <view class="infect-source-site-title" style="background-color: white;color: black;font-size: 14px">广州大学城体育中心</view>
+      </view>
+      <view class="description-inner-container">
+        <view class="infect-source-site-title">感染风险</view>
+      </view>
     </view>
 
     <view class="percent-container">93%</view>
+
+    <view class="time">2020/02/02/04:08</view>
   </view>
 </template>
 <script>
   import wepy from 'wepy';
 
   export default class bottomCard extends wepy.component {
-    props = {};
+    props = {
+        history: {
+          type: Object,
+          twoway: true,
+        }
+    };
 
-    data = {};
+    data = {
+      isShow: true
+    };
 
     onLoad() {
 
@@ -80,6 +123,11 @@
 
     watch = {};
 
-    methods = {};
+    methods = {
+      cancel() {
+        console.log('我点击了')
+        this.isShow = false
+      }
+    };
   }
 </script>
