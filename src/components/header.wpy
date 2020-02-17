@@ -27,6 +27,23 @@
       line-height: rpx(90);
       color: #5CA2FA;
       margin-left:auto;
+
+      .select {
+        vertical-align: top;
+        display: inline-block;
+        height: 100%;
+        font-size: rpx(20);
+        margin-left: rpx(25);
+        line-height: rpx(100);
+      }
+
+      .city-show {
+        vertical-align: top;
+        display: inline-block;
+        height: 100%;
+        font-size: rpx(28);
+        color: black;
+      }
     }
 
     .history-record {
@@ -44,7 +61,10 @@
 
 <template>
   <view class="header-container">
-    <view class="header-title">抗疫系统</view>
+    <view class="header-title">
+      <view class="city-show" @tap="showCity">{{cityInfo.province}}  {{cityInfo.city}}</view>
+      <view class="select" @tap="showCity">切换</view>
+    </view>
     <image class="history-record" src="../tools/image/history.png" @tap="toHistory"></image>
   </view>
 </template>
@@ -53,19 +73,32 @@
   import wepy from 'wepy';
 
   export default class header extends wepy.component {
-    props = {};
+    props = {
+      cityInfo: {
+        type: Object,
+        twoway: true
+      }
+    };
 
     data = {};
 
     events = {};
 
-    watch = {};
+    watch = {
+      cityInfo() {
+        console.log('wo变化了')
+      }
+    };
 
     methods = {
       toHistory() {
         wepy.navigateTo({
           url: '/pages/testrouter'
         })
+      },
+
+      showCity() {
+        this.$emit('showCity', 'YES')
       }
     };
   }
