@@ -1,0 +1,495 @@
+<style lang="scss">
+@import '../tools/css/sharecss';
+
+.time-picker {
+  display: block;
+  position: fixed;
+  top: 37%;
+  left: 13%;
+  height: rpx(600);
+  width: rpx(450);
+  padding: 1px 5%;
+  margin-left: -rpx(275);
+  margin-top: -rpx((200));
+  background-color: white;
+  border-radius: 6pt;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0px -3px 6px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  z-index: 1000;
+}
+
+.picker-title {
+  display: block;
+  margin: rpx(25) auto;
+  color: #5ca2fa;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.time-zones {
+  width: 85%;
+  margin: rpx(15) auto;
+  padding: rpx(4) 0;
+  border-bottom: 2px solid #e6e6e6;
+}
+
+.time-zones:hover {
+  border-bottom: 2px solid #5ca2fa;
+}
+
+.selected-time {
+  border-bottom: 2px solid #5ca2fa;
+}
+
+.picker-button {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  text-align: center;
+}
+
+.picker-button view {
+  display: inline-block;
+  width: 49.5%;
+  margin: 10px 0;
+  outline: none;
+  background-color: transparent;
+  font-size: 18px;
+}
+.cancel-button {
+  color: rgba(0, 0, 0, 0.6);
+  border-right: 1pt solid rgba(0, 0, 0, 0.16);
+}
+.sure-button {
+  color: #5ca2fa;
+}
+.column_select {
+  color: #5ca2fa;
+}
+</style>
+<template>
+  <view class="time-picker">
+    <view class="picker-title">请选择个人历史轨迹显示区间</view>
+    <view bindtap="chooseStart">
+      <view
+        class="time-zones {{startPicker ?'selected-time':''}}"
+      >{{year}} 年 {{month}} 月 {{day}} 日 {{hour}} 时</view>
+    </view>
+    <view>至</view>
+    <view bindtap="chooseEnd">
+      <view
+        class="time-zones {{!startPicker ?'selected-time':''}}"
+      >{{endYear}} 年 {{endMonth}} 月 {{endDay}} 日 {{endHour}} 时</view>
+    </view>
+    <!--开始时间-->
+    <picker-view
+      indicator-style="height: 30px;"
+      style="width: 100%; height: 110px;font-size:16px;"
+      value="{{value}}"
+      bindchange="bindMultiPickerChange"
+      bindcolumnchange="bindMultiPickerColumnChange"
+      wx:if="{{startPicker}}"
+    >
+      <picker-view-column style="flex:0 0 20%;">
+        <view
+          wx:for="{{years}}"
+          style="line-height: 30px;"
+          wx:key="{{index}}"
+          class="{{value[0] == index ?'column_select':''}}"
+        >{{item}}</view>
+      </picker-view-column>
+      <picker-view-column style="line-height: 30px; font-size: 12px;padding:0;">年</picker-view-column>
+      <picker-view-column>
+        <view
+          wx:for="{{months}}"
+          style="line-height: 30px"
+          wx:key="{{index}}"
+          class="{{value[2] == index ?'column_select':''}}"
+        >{{item}}</view>
+      </picker-view-column>
+      <picker-view-column style="line-height: 30px; font-size: 12px;">月</picker-view-column>
+      <picker-view-column>
+        <view
+          wx:for="{{days}}"
+          style="line-height: 30px"
+          wx:key="{{index}}"
+          class="{{value[4] == index ?'column_select':''}}"
+        >{{item}}</view>
+      </picker-view-column>
+      <picker-view-column style="line-height: 30px; font-size: 12px;">日</picker-view-column>
+      <picker-view-column>
+        <view
+          wx:for="{{hours}}"
+          style="line-height: 30px"
+          wx:key="{{index}}"
+          class="{{value[6] == index ?'column_select':''}}"
+        >{{item}}</view>
+      </picker-view-column>
+      <picker-view-column style="line-height: 30px; font-size: 12px;">时</picker-view-column>
+    </picker-view>
+    <!--结束时间-->
+    <picker-view
+      indicator-style="height: 30px;"
+      style="width: 100%; height: 110px;font-size:16px;"
+      value="{{endValue}}"
+      bindchange="bindMultiPickerChange"
+      bindcolumnchange="bindMultiPickerColumnChange"
+      wx:if="{{!startPicker}}"
+    >
+      <picker-view-column style="flex:0 0 20%;">
+        <view
+          wx:for="{{years}}"
+          style="line-height: 30px;"
+          wx:key="{{index}}"
+          class="{{endValue[0] == index ?'column_select':''}}"
+        >{{item}}</view>
+      </picker-view-column>
+      <picker-view-column style="line-height: 30px; font-size: 12px;padding:0;">年</picker-view-column>
+      <picker-view-column>
+        <view
+          wx:for="{{months}}"
+          style="line-height: 30px"
+          wx:key="{{index}}"
+          class="{{endValue[2] == index ?'column_select':''}}"
+        >{{item}}</view>
+      </picker-view-column>
+      <picker-view-column style="line-height: 30px; font-size: 12px;">月</picker-view-column>
+      <picker-view-column>
+        <view
+          wx:for="{{days}}"
+          style="line-height: 30px"
+          wx:key="{{index}}"
+          class="{{endValue[4] == index ?'column_select':''}}"
+        >{{item}}</view>
+      </picker-view-column>
+      <picker-view-column style="line-height: 30px; font-size: 12px;">日</picker-view-column>
+      <picker-view-column>
+        <view
+          wx:for="{{hours}}"
+          style="line-height: 30px"
+          wx:key="{{index}}"
+          class="{{endValue[6] == index ?'column_select':''}}"
+        >{{item}}</view>
+      </picker-view-column>
+      <picker-view-column style="line-height: 30px; font-size: 12px;">时</picker-view-column>
+    </picker-view>
+    <view class="picker-button">
+      <view class="cancel-button" bindtap="bindClose">取消</view>
+      <view class="sure-button" bindtap="bindSure">确定</view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+
+export default class TimePicker extends wepy.component {
+  props = {
+    startTime: {
+      type: String,
+      default: '',
+      twoWay: true
+    },
+    endTime: {
+      type: String,
+      default: '',
+      twoWay: true
+    },
+    showPicker: {
+      type: Boolean,
+      default: true, // 设定选中项
+      // 双向 这里必须制定 true
+      twoWay: true
+    }
+  };
+
+  data = {
+    years: new Array(250),
+    months: new Array(13),
+    days: new Array(40),
+    hours: new Array(13),
+    multiArray: [], // 选择范围
+    choose_year: '',
+    yearIndex: 0,
+
+    year: 2020,
+    month: 10,
+    day: 10,
+    hour: 10,
+    endYear: 2020,
+    endMonth: 10,
+    endDay: 10,
+    endHour: 10,
+
+    value: [
+      100,
+      0,
+      new Date().getMonth() - 1,
+      0,
+      new Date().getDate() - 1,
+      0,
+      new Date().getHours(),
+      0
+    ],
+    endValue: [
+      101,
+      0,
+      new Date().getMonth() - 1,
+      0,
+      new Date().getDate() - 1,
+      0,
+      new Date().getHours(),
+      0
+    ],
+
+    startPicker: true
+  };
+  // 设置初始值
+  setTimeDate() {
+    const date = new Date();
+    let _yearIndex = 0;
+    this.years = [];
+    this.months = [];
+    this.days = [];
+    this.hours = [];
+    // 默认设置
+    let _defaultYear = this.time ? this.time.split('-')[0] : 0;
+    // 获取年
+    for (let i = date.getFullYear() - 100; i <= date.getFullYear() + 100; i++) {
+      this.years.push('' + i);
+      // 默认设置的年的位置
+      if (_defaultYear && i === parseInt(_defaultYear)) {
+        this.yearIndex = _yearIndex;
+        this.choose_year = _defaultYear;
+      }
+      _yearIndex = _yearIndex + 1;
+    }
+    // 获取月份
+    for (let i = 1; i <= 12; i++) {
+      if (i < 10) {
+        i = '0' + i;
+      }
+      this.months.push('' + i);
+    }
+    // 获取日期
+    for (let i = 1; i <= 31; i++) {
+      if (i < 10) {
+        i = '0' + i;
+      }
+      this.days.push('' + i);
+    }
+    // 获取小时
+    for (let i = 0; i < 24; i++) {
+      if (i < 10) {
+        i = '0' + i;
+      }
+      this.hours.push('' + i);
+    }
+  }
+  // 返回月份的天数
+  setDays(selectYear, selectMonth) {
+    let num = selectMonth;
+    let temp = [];
+    if (
+      num === 1 ||
+      num === 3 ||
+      num === 5 ||
+      num === 7 ||
+      num === 8 ||
+      num === 10 ||
+      num === 12
+    ) {
+      // 判断31天的月份
+      for (let i = 1; i <= 31; i++) {
+        if (i < 10) {
+          i = '0' + i;
+        }
+        temp.push('' + i);
+      }
+    } else if (num === 4 || num === 6 || num === 9 || num === 11) {
+      // 判断30天的月份
+      for (let i = 1; i <= 30; i++) {
+        if (i < 10) {
+          i = '0' + i;
+        }
+        temp.push('' + i);
+      }
+    } else if (num === 2) {
+      // 判断2月份天数
+      let year = parseInt(selectYear);
+      if ((year % 400 === 0 || year % 100 !== 0) && year % 4 === 0) {
+        for (let i = 1; i <= 29; i++) {
+          if (i < 10) {
+            i = '0' + i;
+          }
+          temp.push('' + i);
+        }
+      } else {
+        for (let i = 1; i <= 28; i++) {
+          if (i < 10) {
+            i = '0' + i;
+          }
+          temp.push('' + i);
+        }
+      }
+    }
+    return temp;
+  }
+
+  // 设置默认值 格式2019-07-10 10:30
+  setDefaultTime() {
+    // let allDateList = this.time.split(' ');
+    // // 日期
+    // let dateList = allDateList[0].split('-');
+    // let month = parseInt(dateList[1]) - 1;
+    // let day = parseInt(dateList[2]) - 1;
+    // // 时间
+    // let timeList = allDateList[1].split(':');
+    // this.multiArray[2] = this.setDays(dateList[0], parseInt(dateList[1]));
+    // this.startIndex = [this.yearIndex, month, day, timeList[0], timeList[1]];
+    // this.endIndex = [this.yearIndex, month, day, timeList[0], timeList[1]];
+  }
+
+  methods = {
+    // // 监听picker的滚动事件
+    // bindMultiPickerColumnChange(e) {
+    //   // 获取年份
+    //   if (e.detail.column === 0) {
+    //     this.choose_year = this.multiArray[e.detail.column][e.detail.value];
+    //   }
+    //   // console.log('修改的列为', e.detail.column, '，值为', e.detail.value);
+    //   // 设置月份数组
+    //   if (e.detail.column === 2) {
+    //     let num = parseInt(this.multiArray[e.detail.column][e.detail.value]);
+    //     this.multiArray[2] = this.setDays(this.choose_year, num);
+    //   }
+
+    //   this.multiIndex[e.detail.column] = e.detail.value;
+    //   console.log(this.multiArray)
+    //   console.log(this.multiIndex)
+    //   this.$apply();
+    // },
+
+    // 获取时间日期
+    bindMultiPickerChange(e) {
+      // console.log('picker发送选择改变，携带值为', e.detail.value)
+      if (this.startPicker) {
+        this.value = e.detail.value;
+        var currentIndex = this.value;
+      } else {
+        this.endValue = e.detail.value;
+        var currentIndex = this.endValue;
+      }
+      const year = this.multiArray[0][currentIndex[0]];
+      const month = this.multiArray[1][currentIndex[2]];
+      const day = this.multiArray[2][currentIndex[4]];
+      const hour = this.multiArray[3][currentIndex[6]];
+      // console.log(`${year}-${month}-${day}-${hour}-${minute}`);
+      if (this.startPicker) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.startTime = year + '-' + month + '-' + day + ' ' + hour;
+      } else {
+        this.endYear = year;
+        this.endMonth = month;
+        this.endDay = day;
+        this.endHour = hour;
+        this.endTime = year + '-' + month + '-' + day + ' ' + hour;
+      }
+
+      this.$apply();
+    },
+    bindClose() {
+      this.showPicker = false;
+    },
+    bindSure() {},
+    chooseStart() {
+      this.startPicker = true;
+    },
+    chooseEnd() {
+      this.startPicker = false;
+    }
+  };
+  onLoad() {
+    this.setTimeDate();
+    this.multiArray = [this.years, this.months, this.days, this.hours];
+    this.choose_year = this.multiArray[0][0];
+
+    if (!this.time) {
+      // 默认显示当前日期
+      let date = new Date();
+      this.year = date.getFullYear();
+      this.endYear = date.getFullYear() + 1;
+      if (date.getMonth() == 11 || date.getMonth() == 12) {
+        this.month = date.getMonth();
+        this.endMonth = date.getMonth();
+      } else {
+        this.month = '0' + date.getMonth();
+        this.endMonth = '0' + date.getMonth();
+      }
+      if (
+        date.getDate() === 1 ||
+        date.getDate() === 2 ||
+        date.getDate() === 3 ||
+        date.getDate() === 4 ||
+        date.getDate() === 5 ||
+        date.getDate() === 6 ||
+        date.getDate() === 7 ||
+        date.getDate() === 8 ||
+        date.getDate() === 9
+      ) {
+        this.day = '0' + date.getDate();
+        this.endDay = '0' + date.getDate();
+      } else {
+        this.day = date.getDate();
+        this.endDay = date.getDate();
+      }
+      if (
+        date.getHours() === 1 ||
+        date.getHours() === 2 ||
+        date.getHours() === 3 ||
+        date.getHours() === 4 ||
+        date.getHours() === 5 ||
+        date.getHours() === 6 ||
+        date.getHours() === 7 ||
+        date.getHours() === 8 ||
+        date.getHours() === 9
+      ) {
+        this.hour = '0' + date.getHours();
+        this.endHour = '0' + date.getHours();
+      } else {
+        this.hour = date.getHours();
+        this.endHour = date.getHours();
+      }
+      this.multiArray[2] = this.setDays(this.choose_year, date.getMonth());
+      console.log(this.multiArray);
+      this.value = [
+        100,
+        0,
+        date.getMonth() - 1,
+        0,
+        date.getDate() - 1,
+        0,
+        date.getHours(),
+        0
+      ];
+      this.endValue = [
+        101,
+        0,
+        date.getMonth() - 1,
+        0,
+        date.getDate() - 1,
+        0,
+        date.getHours(),
+        0
+      ];
+    } else {
+      this.setDefaultTime();
+    }
+    this.$apply();
+  }
+}
+</script>

@@ -32,6 +32,7 @@
     <header></header>
     <infectAlert :isVisible.sync="showInfectWarning"></infectAlert>
     <riskAlert :risk.sync="risk"></riskAlert>
+    <timePicker :startTime.sync='startTime' :endTime.sync='endTime' :showPicker.sync="showPicker" wx:if="{{showPicker}}"></timePicker>
     <bottomCard></bottomCard>
     <map
       id="myMap"
@@ -53,6 +54,7 @@
   import riskAlert from '../components/riskAlert';
   import infectAlert from '../components/infectAlert';
   import bottomCard from '../components/bottomCard'
+  import timePicker from '../components/timePicker'
   import {Location} from '../tools/util/getLocation'
   import { GetSickData } from '../tools/api/getSickData';
   import { mapDraw } from '../tools/util/sickLabel';
@@ -70,7 +72,8 @@
       header: header,
       riskAlert: riskAlert,
       infectAlert: infectAlert,
-      bottomCard: bottomCard
+      bottomCard: bottomCard,
+      timePicker: timePicker
     };
 
     mixins = [testMixin];
@@ -87,7 +90,13 @@
       latitude: null,
       longitude: null,
       markers: null,
-      polygons: []
+      polygons: [],
+
+      // 时间选择器
+      showPicker: true,
+      startTime: "",
+      endTime: ""
+      
     };
 
     computed = {
