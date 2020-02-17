@@ -25,13 +25,13 @@ class sickLabel extends getLocation {
         for (let j = 0; j < data[i].pois.length; j++) {
           singleRegion = {
             points: [],
-            strokeColor: '#DC143C',
+            strokeColor: '#5CA2FA',
             strokeWidth: 3
           };
           for (let k = 0; k < data[i].pois[j].geometry.coordinates[0].length; k++) {
             singleRegion.points.push({
-              longitude: data[i].pois[j].geometry.coordinates[0][k][0],
-              latitude: data[i].pois[j].geometry.coordinates[0][k][1]
+              longitude: Number(data[i].pois[j].geometry.coordinates[0][k][0]),
+              latitude: Number(data[i].pois[j].geometry.coordinates[0][k][1])
             });
           }
           if(singleRegion.points.length !== 0) {
@@ -43,14 +43,14 @@ class sickLabel extends getLocation {
         _this.setData({
           polygons: array
         })
-        break
+        return array
       }
-      wx.showToast({
-        title: '查询无果',
-        icon: 'none',
-      })
     }
-    return array;
+    wx.showToast({
+      title: '查询无果',
+      icon: 'none',
+    })
+    return false
   }
 
   //打出疫情发生地的makers
@@ -78,8 +78,8 @@ class sickLabel extends getLocation {
             height: 45
           };
 
-          singleCenter.latitude = data[i].pois[j].point.coordinates[1];
-          singleCenter.longitude = data[i].pois[j].point.coordinates[0];
+          singleCenter.latitude = Number(data[i].pois[j].point.coordinates[1]);
+          singleCenter.longitude = Number(data[i].pois[j].point.coordinates[0]);
           temp.push(singleCenter);
 
           singleCenter = null

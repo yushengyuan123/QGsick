@@ -28,7 +28,7 @@
 </style>
 <template>
   <view class="map_container">
-    <!--    <intiAlert></intiAlert>-->
+<!--        <intiAlert></intiAlert>-->
     <header :cityInfo.sync="citySelect"></header>
     <infectAlert :isVisible.sync="showInfectWarning"></infectAlert>
     <!--    <riskAlert :risk.sync="risk"></riskAlert>-->
@@ -42,7 +42,9 @@
       markers="{{markers}}"
       show-location="true"
       bindmarkertap="makertap"
-      polygons="{{polygons}}">
+      polygons="{{polygons}}"
+      scale="10"
+    >
     </map>
   </view>
 </template>
@@ -58,6 +60,7 @@
   import { Location } from '../tools/util/getLocation';
   import { GetSickData } from '../tools/api/getSickData';
   import { mapDraw } from '../tools/util/sickLabel';
+  import {geocoder} from '../tools/util/transform';
   import { user } from '../tools/util/Login';
   import testMixin from '../mixins/test';
 
@@ -82,15 +85,14 @@
     events = {
       //city组件向父组件传来选择区域的信息,展示出疫情小区划分
       'getRegion': (data) => {
-        console.log(data);
         this.citySelect.isShow = false;
         this.citySelect.province = data.province;
         this.citySelect.city = data.city;
-        console.log(this.citySelect);
+        geocoder.getPoint(data.province + data.city, this)
         GetSickData.getSickDate().then((res) => {
           console.log(res);
           mapDraw.drawRegion(res.data, data, this);
-          mapDraw.setMarker(res.data, data, this);
+          // mapDraw.setMarker(res.data, data, this);
         });
       },
 
@@ -115,8 +117,8 @@
       },
       citySelect: {
         isShow: false,
-        province: null,
-        city: null
+        province: '',
+        city: ''
       },
       latitude: null,
       longitude: null,
@@ -134,21 +136,33 @@
 
     }
 
-    onLoad() {
-      // user.loginWx().then((res) => {
+    async onLoad() {
+      // await user.loginWx().then((res) => {
       //   console.log(res)
       //   console.log(user.getCode())
       // })
-      Location.getLocation(this);
-      GetSickData.getSickDate().then((res) => {
-        mapDraw.sickInfo = res.data;
-        return Location.getSite();
-      }).then((result) => {
+      // await GetSickData.isContact().then((res) => {
+      //   if(res.data.isCloseContact === true) {
+      //     this.showInfectWarning = true
+      //   }
+      // })
+
+      Location.getSite().then((result) => {
         this.citySelect.province = result.province;
         this.citySelect.city = result.city;
-        // this.methods.initRegion(result, this)
-        this.$apply();
-      });
+          // this.methods.initRegion(result, this)
+          this.$apply();
+      })
+      Location.getLocation(this);
+      // GetSickData.getSickDate().then((res) => {
+      //   mapDraw.sickInfo = res.data;
+      //   return Location.getSite();
+      // }).then((result) => {
+      //   this.citySelect.province = result.province;
+      //   this.citySelect.city = result.city;
+      //   // this.methods.initRegion(result, this)
+      //   this.$apply();
+      // });
       // Location.getSite().then((res) => {
       //   this.citySelect.province = res.province
       //   this.citySelect.city = res.city
