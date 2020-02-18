@@ -7,12 +7,23 @@ class getSickData extends Request {
   }
 
   //查询是否为密切接触者
-  async isContact() {
-    return getResData(await this.getRequest('/core/contact'))
+  async isContact(data) {
+    return getResData(await this.postRequest('/core/contact', data))
   }
 
-  async Login() {
-    return getResData(await this.getRequest());
+  //用户实时风险
+  async realRisk() {
+    return getResData(await this.getRequest('/core/risk'))
+  }
+
+  //风险量化
+  async quantifyRisk() {
+    return getResData(await this.getRequest('/core/quantificat'))
+  }
+
+
+  async Login(code) {
+    return getResData(await this.postRequest('/user/loginByWechat', code));
   }
 }
 

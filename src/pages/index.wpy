@@ -1,4 +1,4 @@
-<style lang="scss">
+<style lang="scss" scoped>
   .map_container {
     position: absolute;
     top: 0;
@@ -132,7 +132,7 @@
       showPicker: true,
       startTime: "",
       endTime: ""
-      
+
     };
 
     computed = {
@@ -146,9 +146,13 @@
     }
 
     async onLoad() {
-      // await user.loginWx().then((res) => {
+      // user.loginWx().then((res) => {
       //   console.log(res)
-      //   console.log(user.getCode())
+      //   let code = user.getCode()
+      //   console.log(code)
+      //   GetSickData.Login({
+      //     code: user.getCode()
+      //   })
       // })
       // await GetSickData.isContact().then((res) => {
       //   if(res.data.isCloseContact === true) {
@@ -156,13 +160,17 @@
       //   }
       // })
 
-      Location.getSite().then((result) => {
-        this.citySelect.province = result.province;
-        this.citySelect.city = result.city;
-          // this.methods.initRegion(result, this)
-          this.$apply();
-      })
+      // Location.getSite().then((result) => {
+      //   this.citySelect.province = result.province;
+      //   this.citySelect.city = result.city;
+      //     // this.methods.initRegion(result, this)
+      //     this.$apply();
+      // })
       Location.getLocation(this);
+
+      // GetSickData.isContact().then((res) => {
+      //   console.log(res)
+      // })
       // GetSickData.getSickDate().then((res) => {
       //   mapDraw.sickInfo = res.data;
       //   return Location.getSite();
