@@ -2,7 +2,7 @@
   .map_container {
     position: absolute;
     top: 0;
-    bottom: 80px;
+    bottom: 1px;
     left: 0;
     right: 0;
     z-index: 1;
@@ -28,12 +28,13 @@
 </style>
 <template>
   <view class="map_container">
-<!--    <intiAlert></intiAlert>-->
-    <header></header>
+<!--        <intiAlert></intiAlert>-->
+    <header :cityInfo.sync="citySelect"></header>
     <infectAlert :isVisible.sync="showInfectWarning"></infectAlert>
-    <riskAlert :risk.sync="risk"></riskAlert>
     <timePicker :startTime.sync='startTime' :endTime.sync='endTime' :showPicker.sync="showPicker" wx:if="{{showPicker}}"></timePicker>
-    <bottomCard></bottomCard>
+    <!--    <riskAlert :risk.sync="risk"></riskAlert>-->
+    <!--    <bottomCard></bottomCard>-->
+    <city :cityInfo.sync="citySelect"></city>
     <map
       id="myMap"
       style="width: 100%; height: 100%;"
@@ -42,7 +43,9 @@
       markers="{{markers}}"
       show-location="true"
       bindmarkertap="makertap"
-      polygons="{{polygons}}">
+      polygons="{{polygons}}"
+      scale="10"
+    >
     </map>
   </view>
 </template>
@@ -53,18 +56,21 @@
   import header from '../components/header';
   import riskAlert from '../components/riskAlert';
   import infectAlert from '../components/infectAlert';
-  import bottomCard from '../components/bottomCard'
+  import bottomCard from '../components/bottomCard';
   import timePicker from '../components/timePicker'
-  import {Location} from '../tools/util/getLocation'
+  import city from '../components/city';
+  import { Location } from '../tools/util/getLocation';
   import { GetSickData } from '../tools/api/getSickData';
   import { mapDraw } from '../tools/util/sickLabel';
-  import {user} from '../tools/util/Login';
+  import {geocoder} from '../tools/util/transform';
+  import { user } from '../tools/util/Login';
   import testMixin from '../mixins/test';
 
   export default class Index extends wepy.page {
 
     config = {
-      navigationBarTitleText: 'QG疫情监控'
+      navigationBarTitleText: 'QG疫情监控',
+      'usingComponents': { 'ec-canvas': '../ec-canvas/ec-canvas' }
     };
 
     components = {
@@ -73,10 +79,35 @@
       riskAlert: riskAlert,
       infectAlert: infectAlert,
       bottomCard: bottomCard,
-      timePicker: timePicker
+      timePicker: timePicker,
+      city: city
     };
 
     mixins = [testMixin];
+
+    events = {
+      //city组件向父组件传来选择区域的信息,展示出疫情小区划分
+      'getRegion': (data) => {
+        this.citySelect.isShow = false;
+        this.citySelect.province = data.province;
+        this.citySelect.city = data.city;
+        geocoder.getPoint(data.province + data.city, this)
+        GetSickData.getSickDate().then((res) => {
+          console.log(res);
+          mapDraw.drawRegion(res.data, data, this);
+          // mapDraw.setMarker(res.data, data, this);
+        });
+      },
+
+      //打开城市选择器
+      'showCity': (command) => {
+        if (command === 'YES') {
+          this.citySelect.isShow = true;
+          return;
+        }
+        this.citySelect.isShow = false;
+      }
+    };
 
 
     data = {
@@ -86,6 +117,11 @@
         date: '2020/02/02/14:08',
         description: '感染风险极高，请自行在家隔离',
         isShow: false
+      },
+      citySelect: {
+        isShow: false,
+        province: '',
+        city: ''
       },
       latitude: null,
       longitude: null,
@@ -109,30 +145,54 @@
 
     }
 
-    onLoad() {
-      user.loginWx().then((res) => {
-        console.log(res)
-        console.log(user.getCode())
+    async onLoad() {
+      // await user.loginWx().then((res) => {
+      //   console.log(res)
+      //   console.log(user.getCode())
+      // })
+      // await GetSickData.isContact().then((res) => {
+      //   if(res.data.isCloseContact === true) {
+      //     this.showInfectWarning = true
+      //   }
+      // })
+
+      Location.getSite().then((result) => {
+        this.citySelect.province = result.province;
+        this.citySelect.city = result.city;
+          // this.methods.initRegion(result, this)
+          this.$apply();
       })
-      Location.getLocation(this)
-
-      // Location.circularGetLocation(this)
-
-      //获取当前的地理位置、速度
+      Location.getLocation(this);
       // GetSickData.getSickDate().then((res) => {
-      //   // let temp = mapDraw.divisionLoad(res.data, this)
-      //   // console.log(temp)
-      //   // this.setData({
-      //   //   markers: temp
-      //   // })
-      //   // console.log(this.data.markers)
+      //   mapDraw.sickInfo = res.data;
+      //   return Location.getSite();
+      // }).then((result) => {
+      //   this.citySelect.province = result.province;
+      //   this.citySelect.city = result.city;
+      //   // this.methods.initRegion(result, this)
+      //   this.$apply();
       // });
-
-
+      // Location.getSite().then((res) => {
+      //   this.citySelect.province = res.province
+      //   this.citySelect.city = res.city
+      //   this.$apply()
+      // })
+      // Location.circularGetLocation(this)
     }
 
     methods = {
-
+      initRegion(res, that) {
+        let data = {
+          province: res.province,
+          city: res.city
+        }
+        console.log(that)
+        console.log(data)
+        console.log('我执行了region');
+        console.log(mapDraw.sickInfo);
+        mapDraw.drawRegion(mapDraw.sickInfo, data, that);
+        mapDraw.setMarker(mapDraw.sickInfo, data, that)
+      }
     };
   }
   ;

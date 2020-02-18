@@ -1,0 +1,181 @@
+<style lang="scss">
+  @import "../tools/css/sharecss";
+
+  .city-container {
+    @include share-css;
+    display: block;
+    height: rpx(444);
+    width: rpx(550);
+    top: 40%;
+    left: 50%;
+    z-index: 100;
+    margin-left: - rpx(275);
+    margin-top: - rpx((200));
+    box-shadow: 0px 24px 24px 0px rgba(0, 0, 0, 0.3), 0px 0px 24px 0px rgba(0, 0, 0, 0.22);
+    border-radius: 9px;
+    background-color: white;
+  }
+
+  .city-none {
+    display: none;
+  }
+
+  .city-choose-title {
+    $height: rpx(90) !global;
+    @include height_width_margin($height, 100%);
+    text-align: center;
+    line-height: $height;
+    color: #5CA2FA;
+    font: {
+      size: rpx(34);
+    }
+  }
+
+  .city-detail-choose {
+    @mixin share-css {
+      display: inline-block;
+      height: 100%;
+      width: rpx(150);
+      vertical-align: top;
+      overflow-y: scroll;
+      color: #979797;
+    }
+    $height: rpx(245) !global;
+    @include height_width_margin($height, 100%);
+    text-align: center;
+
+    .province-container {
+      @include share-css;
+
+      .province-name {
+        height: rpx(54);
+        line-height: rpx(54);
+        color: #979797;
+        font: {
+          size: rpx(27);
+        };
+      }
+
+      .province-name-choose {
+        height: rpx(54);
+        line-height: rpx(54);
+        font: {
+          size: rpx(27);
+        };
+        color: #5CA2FA;
+      }
+    }
+  }
+
+  .confirm-btn {
+    $height: rpx(60) !global;
+    @include height_width_margin($height, 100%);
+    margin-top: rpx(30);
+
+    .btn {
+      display: inline-block;
+      @include height_width_margin($height, 50%);
+      height: 100%;
+      color: #888888;
+      line-height: $height;
+      text-align: center;
+      font: {
+        size: rpx(30);
+      };
+    }
+  }
+
+
+</style>
+<template>
+  <view class="{{cityInfo.isShow ? 'city-container' : 'city-none'}}">
+    <view class='city-choose-title'>切换城市</view>
+    <view class="city-detail-choose">
+      <view class="province-container" style="border-right: 1px solid rgba(112,112,112,0.4)">
+        <view  wx:for="{{provinceList}}"  wx:key="{{index}}" data-classify="{{item}}" data-index='{{index}}' bindtap="focusCity({{item.name}})" class="{{item.name == choose ? 'province-name-choose' : 'province-name'}}">
+          {{item.name}}
+        </view>
+      </view>
+      <view class="province-container">
+        <view  wx:for="{{cityList}}" wx:key="{{index}}" data-classify="{{item}}" bindtap="selectCity({{item.name}})" class="{{item.name == cityChoose ? 'province-name-choose' : 'province-name'}}">
+          {{item.name}}
+        </view>
+      </view>
+    </view>
+    <view class="confirm-btn">
+      <view class="btn" style="border-right: 1px solid rgba(112,112,112,0.4)" @tap="seeRegion">取消</view>
+      <view class="btn" style="color:#5CA2FA; width: 49%" @tap="seeRegion">确定</view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+  import { cityData } from '../tools/util/cityJson';
+  import {mapDraw} from '../tools/util/sickLabel';
+  import {GetSickData} from '../tools/api/getSickData';
+
+  export default class city extends wepy.component {
+    props = {
+      cityInfo: {
+        type: Object,
+        twoway: true
+      }
+    };
+
+    data = {
+      provinceList: cityData,
+      cityList: cityData[0].child,
+      selection: {
+        province: cityData[0].name,
+        city: cityData[0].child[0].name
+      },
+      choose: cityData[0].name,
+      cityChoose: cityData[0].child[0].name
+    };
+
+    onLoad() {
+      console.log(this.cityInfo);
+    }
+
+    events = {};
+
+    watch = {
+    };
+
+    methods = {
+      //聚焦动态改变城市展现
+      focusCity(provinceName, event) {
+        this.choose = event.currentTarget.dataset.classify.name
+        for (let i = 0; i < cityData.length; i++) {
+          if (cityData[i].name === provinceName) {
+            this.cityList = cityData[i].child;
+            this.selection.province = provinceName
+            this.selection.city = cityData[i].child[0].name
+            break;
+          }
+        }
+      },
+
+      selectCity(cityName, event) {
+        this.cityChoose = event.currentTarget.dataset.classify.name
+        console.log(cityName)
+        this.selection.city = cityName
+      },
+
+      seeRegion() {
+        console.log(this.selection)
+        if(!this.selection.province || !this.selection.city) {
+          alert('请选择城市或者省区')
+        }
+        this.$emit('getRegion', {
+          province: this.selection.province,
+          city: this.selection.city
+        })
+      },
+
+      cancel() {
+        this.$emit('showCity', 'NO')
+      }
+    };
+  }
+</script>
