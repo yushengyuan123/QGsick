@@ -1,7 +1,9 @@
 import axios from 'axios'
 
 
-let target_url = 'https://oss.mapmiao.com/others/ncov/data.json?timestamp=999999999999999'
+// let target_url = 'https://oss.mapmiao.com/others/ncov/data.json?timestamp=999999999999999'
+let target_url = 'http://39.98.41.126:3619'
+
 
 export class Request {
   postRequest(url, data) {
@@ -12,8 +14,9 @@ export class Request {
         header: {
           'content-type': 'application/json' // 默认值
         },
+        method:'POST',
         success (res) {
-          resolve(res)
+          resolve(res.data)
         },
         fail (error) {
           reject(error)
@@ -29,8 +32,10 @@ export class Request {
         header: {
           'content-type': 'application/json' // 默认值
         },
+        method: 'GET',
         success (res) {
-          resolve(res)
+          console.log(res.data)
+          resolve(res.data)
         },
         fail (error) {
           reject(error)
