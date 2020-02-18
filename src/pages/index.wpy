@@ -145,31 +145,6 @@
         province: '',
         city: ''
       },
-      multiArray: [{
-        value: '110000',
-        label: '北京市',
-        level: 1,
-        children: [
-          {
-            value: '110000',
-            label: '北京市',
-            level: 2
-          }
-        ]
-      },
-        {
-          value: '500000',
-          label: '重庆市',
-          level: 1,
-          children: [
-            {
-              value: '500000',
-              label: '重庆市',
-              level: 2
-            }
-          ]
-        }],
-      multiIndex: null,
       latitude: null,
       longitude: null,
       markers: null,
