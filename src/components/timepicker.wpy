@@ -468,11 +468,12 @@ export default class TimePicker extends wepy.component {
       this.year = 2019;
       this.endYear = 2020;
       if (date.getMonth() == 11 || date.getMonth() == 12) {
-        this.month = date.getMonth();
-        this.endMonth = date.getMonth();
+        this.month = date.getMonth() +1;
+        this.endMonth = date.getMonth() +1;
       } else {
-        this.month = '0' + date.getMonth();
-        this.endMonth = '0' + date.getMonth();
+        this.month = '0' + (date.getMonth() +1);
+        this.endMonth = '0' + (date.getMonth() +1);
+        this.currentMonth = '0' + (date.getMonth() +1);
       }
       if (
         date.getDate() === 1 ||
@@ -487,6 +488,7 @@ export default class TimePicker extends wepy.component {
       ) {
         this.day = '0' + date.getDate();
         this.endDay = '0' + date.getDate();
+        this.currentDay = '0' + date.getDate();
       } else {
         this.day = date.getDate();
         this.endDay = date.getDate();
@@ -504,6 +506,7 @@ export default class TimePicker extends wepy.component {
       ) {
         this.hour = '0' + date.getHours();
         this.endHour = '0' + date.getHours();
+        this.currentHour = '0' + date.getHours();
       } else {
         this.hour = date.getHours();
         this.endHour = date.getHours();
@@ -513,7 +516,7 @@ export default class TimePicker extends wepy.component {
       this.value = [
         0,
         0,
-        date.getMonth() - 1,
+        date.getMonth(),
         0,
         date.getDate() - 1,
         0,
@@ -523,7 +526,7 @@ export default class TimePicker extends wepy.component {
       this.endValue = [
         1,
         0,
-        date.getMonth() - 1,
+        date.getMonth(),
         0,
         date.getDate() - 1,
         0,
