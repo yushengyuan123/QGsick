@@ -217,26 +217,8 @@ export default class TimePicker extends wepy.component {
     currentDay: new Date().getDate(),
     currentHour: new Date().getHours(),
 
-    value: [
-      0,
-      0,
-      this.currentMonth - 1,
-      0,
-      this.currentDay - 1,
-      0,
-      this.currentHour,
-      0
-    ],
-    endValue: [
-      1,
-      0,
-      this.currentMonth - 1,
-      0,
-      this.currentDay - 1,
-      0,
-      this.currentHour,
-      0
-    ],
+    value: [],
+    endValue: [],
 
     startPicker: true,
     startTime: '',
@@ -421,7 +403,7 @@ export default class TimePicker extends wepy.component {
       });
     },
     bindSure() {
-      if (this.startTime == "") {
+      if (this.startTime == '') {
         this.startTime =
           this.currentYear +
           '-' +
@@ -431,8 +413,9 @@ export default class TimePicker extends wepy.component {
           ' ' +
           '00:00:00';
       }
-      if (this.endTime == "") {
-        this.currentYear +
+      if (this.endTime == '') {
+        this.endTime =
+          this.currentYear +
           '-' +
           this.currentMonth +
           '-' +
@@ -440,15 +423,20 @@ export default class TimePicker extends wepy.component {
           ' ' +
           '23:59:00';
       }
-      console.log(this.month,parseInt(this.endMonth),this.day,this.endDay,this.hour,this.endHour);
       if (
         parseInt(this.year) < parseInt(this.endYear) ||
-        (parseInt(this.year) == parseInt(this.endYear) && parseInt(this.month) < parseInt(this.endMonth)) ||
-        (parseInt(this.year) == parseInt(this.endYear) && parseInt(this.month) == parseInt(this.endMonth) && parseInt(this.day) < parseInt(this.endDay)) ||
-        (parseInt(this.year) == parseInt(this.endYear) && parseInt(this.month) == parseInt(this.endMonth) && parseInt(this.day) == parseInt(this.endDay) && parseInt(this.hour) <= parseInt(this.endHour))
+        (parseInt(this.year) == parseInt(this.endYear) &&
+          parseInt(this.month) < parseInt(this.endMonth)) ||
+        (parseInt(this.year) == parseInt(this.endYear) &&
+          parseInt(this.month) == parseInt(this.endMonth) &&
+          parseInt(this.day) < parseInt(this.endDay)) ||
+        (parseInt(this.year) == parseInt(this.endYear) &&
+          parseInt(this.month) == parseInt(this.endMonth) &&
+          parseInt(this.day) == parseInt(this.endDay) &&
+          parseInt(this.hour) <= parseInt(this.endHour))
       ) {
         this.showPicker = false;
-             console.log(this.startTime,this.endTime);
+        console.log(this.startTime, this.endTime);
         this.$emit('createTrack', {
           startTime: this.startTime,
           endTime: this.endTime
