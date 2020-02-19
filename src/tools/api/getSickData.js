@@ -8,17 +8,12 @@ class getSickData extends Request {
 
   //查询是否为密切接触者
   async isContact(data) {
-    return getResData(await this.postRequest('/core/contact', data))
+    return getResData(await this.getRequest('/core/contact', data))
   }
 
   //用户实时风险
-  async realRisk() {
-    return getResData(await this.getRequest('/core/risk'))
-  }
-
-  //风险量化
-  async quantifyRisk() {
-    return getResData(await this.getRequest('/core/quantificat'))
+  async realRisk(data) {
+    return getResData(await this.getRequest('/core/risk?time=' + data.time + '&lon=' +  data.lon + '&lat=' + data.lat))
   }
 
 

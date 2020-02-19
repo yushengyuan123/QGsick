@@ -4,6 +4,9 @@
  */
 let userInfo = function() {
   let privateCode = null;
+  let userId = null
+  let isSick = null
+  let Authorization = null
 
   function LoginWx() {
     return new Promise(((resolve, reject) => {
@@ -19,6 +22,19 @@ let userInfo = function() {
     }))
   }
 
+  function SetAuthorization(value) {
+    Authorization = value
+  }
+
+  function getAuthorization() {
+    console.log(Authorization)
+    return Authorization
+  }
+
+  function setUserId(id) {
+    userId = id
+  }
+
   function getCode() {
     return privateCode
   }
@@ -27,9 +43,26 @@ let userInfo = function() {
     privateCode = code
   }
 
+  function setSick(sick) {
+    isSick = sick
+  }
+
+  function getUserInfo() {
+    return {
+      userId: userId,
+      isSick: isSick,
+    }
+  }
+
   return {
     getCode: getCode,
-    loginWx: LoginWx
+    loginWx: LoginWx,
+    setId: setUserId,
+    setSick: setSick,
+    setAuthorization: SetAuthorization,
+    getAuthorization: getAuthorization,
+    getUserInfo: getUserInfo
+
   }
 }();
 
