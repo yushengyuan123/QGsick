@@ -1,0 +1,50 @@
+<style lang="scss" scoped>
+  @import "../tools/css/sharecss";
+
+  .track-circle-container {
+    position: fixed;
+    z-index: 100;
+    height: 54px;
+    width: 54px;
+    border-radius: 50%;
+    bottom: 69px;
+    right: 10px;
+
+    .track-image {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+</style>
+<template>
+  <view class="track-circle-container" bindtap="openTrack">
+    <image class="track-image" src="../tools/image/个人轨迹开@2x.png"></image>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy';
+
+  export default class trackCircle extends wepy.component {
+    props = {
+
+    };
+
+    data = {
+    };
+
+    onLoad() {
+      console.log(this.risk)
+    }
+
+    events = {};
+
+    watch = {};
+
+    methods = {
+      openTrack() {
+        this.$emit('openPicker')
+      }
+    };
+  }
+</script>

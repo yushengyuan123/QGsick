@@ -12,3 +12,5 @@ class SubmitTrack extends Request{
     return getResData(await this.getRequest('/core/listSickdata'))
   }
 }
+
+export const submit = new SubmitTrack()

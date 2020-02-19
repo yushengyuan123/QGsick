@@ -1,5 +1,5 @@
 export function getResData(data) {
-    if(data.code === 1) {
+    if(data.code == 1) {
       return {
         isSuccess: true,
         data: data.data ? data.data : null,
