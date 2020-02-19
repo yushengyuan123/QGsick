@@ -8,8 +8,8 @@ class SubmitTrack extends Request{
   }
 
   //获取患者时空轨迹
-  async getSickTrack() {
-    return getResData(await this.getRequest('/core/listSickdata'))
+  async getSickTrack(data) {
+    return getResData(await this.postRequest('/core/listSickdata', data))
   }
 }
 

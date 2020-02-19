@@ -26,13 +26,13 @@
       }
       line-height: rpx(90);
       color: #5CA2FA;
-      margin-left:auto;
+      margin-left: auto;
 
       .select {
         vertical-align: top;
         display: inline-block;
         height: 100%;
-        font-size: rpx(20);
+        font-size: rpx(27);
         margin-left: rpx(25);
         line-height: rpx(100);
       }
@@ -41,9 +41,18 @@
         vertical-align: top;
         display: inline-block;
         height: 100%;
-        font-size: rpx(28);
+        font-size: rpx(33);
         color: black;
       }
+    }
+
+    .subscribe {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      margin-top: rpx(4.5);
+      width: rpx(90);
     }
 
     .history-record {
@@ -61,8 +70,9 @@
 
 <template>
   <view class="header-container">
+    <image class="subscribe" src="../tools/image/订阅@2x.png" bindtap="subscribeMessage"></image>
     <view class="header-title">
-      <view class="city-show" @tap="showCity">{{cityInfo.province}}  {{cityInfo.city}}</view>
+      <view class="city-show" @tap="showCity">{{cityInfo.province}} {{cityInfo.city}}</view>
       <view class="select" @tap="showCity">切换</view>
     </view>
     <image class="history-record" src="../tools/image/history.png" @tap="toHistory"></image>
@@ -70,36 +80,45 @@
 </template>
 
 <script>
-  import wepy from 'wepy';
+    import wepy from 'wepy';
+    import {subscribe} from "../tools/util/subMsg";
 
-  export default class header extends wepy.component {
-    props = {
-      cityInfo: {
-        type: Object,
-        twoway: true
-      }
-    };
+    export default class header extends wepy.component {
+        props = {
+            cityInfo: {
+                type: Object,
+                twoway: true
+            }
+        };
 
-    data = {};
+        data = {};
 
-    events = {};
+        events = {};
 
-    watch = {
-      cityInfo() {
-        console.log('wo变化了')
-      }
-    };
+        watch = {
+            cityInfo() {
+                console.log('wo变化了')
+            }
+        };
 
-    methods = {
-      toHistory() {
-        wepy.navigateTo({
-          url: '/pages/testrouter'
-        })
-      },
+        onLoad() {
+            console.log(this.cityInfo)
+        }
 
-      showCity() {
-        this.$emit('showCity', 'YES')
-      }
-    };
-  }
+        methods = {
+            toHistory() {
+                wepy.navigateTo({
+                    url: '/pages/testrouter'
+                })
+            },
+
+            showCity() {
+                this.$emit('showCity', 'YES')
+            },
+
+            subscribeMessage() {
+                subscribe()
+            }
+        };
+    }
 </script>

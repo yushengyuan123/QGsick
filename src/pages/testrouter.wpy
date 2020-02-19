@@ -1,5 +1,6 @@
 <style lang="scss">
   @import "../tools/css/sharecss";
+
   .history-container {
     height: 100vh;
   }
@@ -9,7 +10,7 @@
     top: 0;
     height: 177px;
     width: 100%;
-    background:linear-gradient(360deg,rgba(92,162,250,1) 0%,rgba(140,188,249,1) 100%);
+    background: linear-gradient(360deg, rgba(92, 162, 250, 1) 0%, rgba(140, 188, 249, 1) 100%);
     border-radius: 0 0 15% 15%;
     z-index: -1;
   }
@@ -29,11 +30,11 @@
   }
 
   .history-record-container {
-    height:159px;
+    height: 148px;
     width: 85%;
     margin: auto auto 25px;
-    box-shadow:0px 2px 5px -1px rgba(0,0,0,0.5);
-    border-radius:9px;
+    box-shadow: 0px 2px 5px -1px rgba(0, 0, 0, 0.5);
+    border-radius: 9px;
     background: {
       color: white;
     };
@@ -48,10 +49,12 @@
     width: calc(100% - 36px);
     margin: auto;
     padding-top: 13px;
+
     .history-record-title {
       @include share-inline;
+      overflow: hidden;
       float: left;
-      color:rgba(234,111,111,1);
+      color: #EA6F6F;
       font: {
         size: 16px;
       };
@@ -60,30 +63,48 @@
     .history-record-time {
       @include share-inline;
       float: right;
-      color:rgba(118,118,118,1);
+      overflow: hidden;
+      color: rgba(118, 118, 118, 1);
       font: {
-        size: 14px;
+        size: 12px;
       };
     }
   }
 
   .percent {
-    height: 91px;
-    width: 120px;
-    margin: auto;
-    line-height: 91px;
-    text-align: center;
-    color:rgba(235,31,31,1);
+    height: 30px;
+    width: calc(100% - 36px);
+    line-height: 30px;
+    text-align: left;
+    color: #79ACEE;
+    margin: 6px auto auto;
     font: {
-      size: 50px;
+      size: 16px;
     };
   }
 
   .warning {
     height: 20px;
-    margin-left: 19px;
+    width: calc(100% - 36px);
     line-height: 20px;
-    color:rgba(234,111,111,1);
+    color: rgba(92, 92, 92, 1);
+    font-size: 16px;
+    margin: 6px auto auto;
+  }
+
+  .position-image {
+    float: left;
+    height: 100%;
+    width: 15px;
+    margin-right: 10px;
+  }
+
+  .check {
+    height: 50px;
+    text-align: center;
+    color: rgba(195, 195, 195, 1);
+    font-size: 12px;
+    margin-top: 19px;
   }
 
 </style>
@@ -91,66 +112,90 @@
   <view class="history-container">
     <view class="circle-container"></view>
     <view class="history-title">历史纪录</view>
-    <view class="history-record-container">
+    <view class="history-record-container" wx:for="{{record}}" wx:key="{{index}}" bindtap="back({{item}})">
       <view class="history-record-title-container">
-        <view class="history-record-title">感染风险</view>
-        <view class="history-record-time">2020/02/02/14:08</view>
+        <image class="position-image" src="../tools/image/位置图标@2x.png"></image>
+        <view class="history-record-title">遇到患者的地方</view>
+        <view class="history-record-time">{{item.time}}</view>
       </view>
-      <view class="percent">66%</view>
-      <view class="warning">感染风险极高请自行在家隔离</view>
-    </view>
-
-    <view class="history-record-container">
-      <view class="history-record-title-container">
-        <view class="history-record-title">感染风险</view>
-        <view class="history-record-time">2020/02/02/14:08</view>
+      <view class="percent">
+        <view class="position-image"></view>
+        <view class="history-record-title">{{item.address}}</view>
       </view>
-      <view class="percent">66%</view>
-      <view class="warning">感染风险极高请自行在家隔离</view>
-    </view>
-
-    <view class="history-record-container">
-      <view class="history-record-title-container">
-        <view class="history-record-title">感染风险</view>
-        <view class="history-record-time">2020/02/02/14:08</view>
+      <view class="warning">
+        <view class="position-image"></view>
+        <view class="history-record-title">{{item.street}}</view>
       </view>
-      <view class="percent">66%</view>
-      <view class="warning">感染风险极高请自行在家隔离</view>
+      <view class="check">点击卡片查看地图</view>
     </view>
   </view>
 </template>
 
 <script>
-  import wepy from 'wepy'
-  import testMixin from '../mixins/test'
+    import wepy from 'wepy'
+    import testMixin from '../mixins/test'
+    import {GetSickData} from "../tools/api/getSickData";
+    import {geocoder} from "../tools/util/transform";
 
-  export default class history extends wepy.page {
-    config = {
-      navigationBarTitleText: '历史记录'
+    export default class history extends wepy.page {
+        config = {
+            navigationBarTitleText: '历史记录'
+        }
+        components = {}
+
+        mixins = [testMixin]
+
+        data = {
+            record: null
+        }
+
+        onReady() {
+            GetSickData.isContact().then(res => {
+                console.log(res)
+                this.record = res.data
+                this.setData({
+                    record: res.data
+                })
+                console.log(this.record)
+                if(res.data.length !== 0) {
+                    for(let i = 0; i < res.data.length; i++) {
+                        geocoder.getAddress(res.data[i].lat, res.data[i].lon).then(result => {
+                            this.setData({
+                                ['record[' + i + '].address']: result.result.address,
+                                ['record[' + i + '].street']: result.result.address_component.district + result.result.address_component.street
+                            })
+                        })
+                        console.log(this.record)
+                    }
+                } else {
+                    wx.showToast({
+                        title: '暂时无历史记录',
+                        icon: 'none',
+                    })
+                }
+            })
+        }
+
+        onLoad() {
+        }
+
+        computed = {}
+
+        methods = {
+            back(point) {
+                let pages = getCurrentPages();
+                let prevPage = pages[pages.length - 2]; // 上一级页面
+                prevPage.setData({
+                    latitude: point.lat,
+                    longitude: point.lon,
+                    scale: 20
+                });
+                wx.navigateBack()
+            }
+        }
+
+        events = {}
+
+
     }
-    components = {
-
-    }
-
-    mixins = [testMixin]
-
-    data = {
-
-
-    }
-
-    computed = {
-
-    }
-
-    methods = {
-
-    }
-
-    events = {
-
-    }
-
-
-  }
 </script>

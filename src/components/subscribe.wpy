@@ -1,0 +1,63 @@
+<style lang="scss" scoped>
+  @import "../tools/css/sharecss";
+
+  .subscribe-container {
+    @include share-css;
+    height: rpx(40);
+    width: calc(90% - 14px);
+    left: 50%;
+    top: rpx(160);
+    margin-left: -45%;
+    z-index: 1000;
+    background-color: rgba(250,250,228,1);;
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.16);
+    border-radius:4px;
+    padding-left: 14px;
+    text-align: left;
+    font-size: rpx(22);
+    line-height: rpx(40);
+
+    .cancel {
+      height: 100%;
+      float: right;
+      line-height: rpx(40);
+      font-size: rpx(35);
+      margin-right: rpx(19);
+    }
+  }
+
+</style>
+
+<template>
+  <view class="subscribe-container" wx:if="{{isShow}}">
+    点击订阅以获取小程序推送。
+    <view class="cancel" bindtap="cancel" >×</view>
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+
+    export default class subscription extends wepy.component {
+        props = {
+
+        };
+
+        data = {
+            isShow: true
+        };
+
+        events = {};
+
+        watch = {
+
+        };
+
+        methods = {
+            cancel() {
+                this.isShow = false
+            }
+
+        };
+    }
+</script>

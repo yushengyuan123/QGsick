@@ -25,11 +25,13 @@
     width: 100%;
     height: 100%;
   }
+
 </style>
 <template>
   <view class="map_container">
 <!--        <intiAlert></intiAlert>-->
-    <header :cityInfo.sync="czitySelect"></header>
+    <header :cityInfo.sync="citySelect"></header>
+    <subscription></subscription>
     <infectAlert :isVisible.sync="showInfectWarning"></infectAlert>
     <timePicker :startTime.sync='startTime' :endTime.sync='endTime' :showPicker.sync="showPicker"
                 wx:if="{{showPicker}}"></timePicker>
@@ -46,7 +48,9 @@
       show-location="true"
       bindmarkertap="makertap"
       polygons="{{polygons}}"
-      scale="10"
+      polyline="{{polyline}}"
+      scale="{{scale}}"
+      show-location='true'
     >
     </map>
   </view>
@@ -62,11 +66,14 @@
     import timePicker from '../components/timePicker';
     import trackCircle from '../components/trackCircle';
     import city from '../components/city';
+    import subscription from '../components/subscribe'
     import {Location} from '../tools/util/getLocation';
     import {GetSickData} from '../tools/api/getSickData';
     import {mapDraw} from '../tools/util/sickLabel';
     import {geocoder} from '../tools/util/transform';
     import {user} from '../tools/util/Login';
+    import {historyTrack} from "../tools/util/historyTrack";
+    import {subscribe} from "../tools/util/subMsg";
     import testMixin from '../mixins/test';
 
     export default class Index extends wepy.page {
@@ -84,7 +91,8 @@
             bottomCard: bottomCard,
             timePicker: timePicker,
             trackCircle: trackCircle,
-            city: city
+            city: city,
+            subscription: subscription
         };
 
         mixins = [testMixin];
@@ -98,8 +106,7 @@
                 geocoder.getPoint(data.province + data.city, this);
                 GetSickData.getSickDate().then((res) => {
                     console.log(res);
-                    mapDraw.drawRegion(res.data, data, this);
-                    // mapDraw.setMarker(res.data, data, this);
+                    mapDraw.drawRegion(res, data, this);
                 });
             },
 
@@ -119,12 +126,19 @@
 
             //执行轨迹展示
             'createTrack': (date) => {
+                console.log(date)
+                historyTrack(date, this)
+            },
 
+            'back': (data) => {
+                console.log('跳转回来')
+                console.log(data)
             }
         };
 
 
         data = {
+            myMap: null,
             showInfectWarning: false,
             risk: {
                 percent: 93,
@@ -141,6 +155,8 @@
             longitude: null,
             markers: null,
             polygons: [],
+            polyline: null,
+            scale: 10,
 
             // 时间选择器
             showPicker: false,
@@ -149,67 +165,36 @@
 
         };
 
-        computed = {
-            now() {
-                return +new Date();
-            }
-        };
+        computed = {};
 
-        onReady() {
-
-        }
-
-        async onLoad() {
+        async onReady() {
             await user.loginWx()
             await GetSickData.Login({code: user.getCode()}).then((res) => {
                 user.setId(res.data.id)
                 user.setSick(res.data.sick)
-                //todo 看看它们做不做
-                // if(user.getUserInfo().isSick === true) {
-                //
-                // }
             })
+        }
 
-            Location.circularGetLocation()
 
-            // GetSickData.isContact().then((res) => {
-            //     console.log(res)
-            //   // if(res.data.isCloseContact === true) {
-            //   //   this.showInfectWarning = true
-            //   // }
-            // })
+        async onLoad() {
+            // Location.circularGetLocation()
 
-            // Location.getSite().then((result) => {
-            //   this.citySelect.province = result.province;
-            //   this.citySelect.city = result.city;
-            //     // this.methods.initRegion(result, this)
-            //     this.$apply();
-            // })
+            Location.getSite().then((result) => {
+                console.log(result)
+              this.citySelect.province = result.province;
+              this.citySelect.city = result.city;
+              this.setData({
+                  'citySelect.province': result.province,
+                  'citySelect.city': result.city
+              })
+              this.$apply();
+            })
             Location.getLocation().then((res) => {
                 this.setData({
                     longitude: res.longitude,
                     latitude: res.latitude
                 })
             });
-
-            // GetSickData.isContact().then((res) => {
-            //   console.log(res)
-            // })
-            // GetSickData.getSickDate().then((res) => {
-            //   mapDraw.sickInfo = res.data;
-            //   return Location.getSite();
-            // }).then((result) => {
-            //   this.citySelect.province = result.province;
-            //   this.citySelect.city = result.city;
-            //   // this.methods.initRegion(result, this)
-            //   this.$apply();
-            // });
-            // Location.getSite().then((res) => {
-            //   this.citySelect.province = res.province
-            //   this.citySelect.city = res.city
-            //   this.$apply()
-            // })
-            // Location.circularGetLocation(this)
         }
 
         methods = {
@@ -220,7 +205,7 @@
                 };
                 mapDraw.drawRegion(mapDraw.sickInfo, data, that);
                 mapDraw.setMarker(mapDraw.sickInfo, data, that);
-            }
+            },
         };
     }
     ;

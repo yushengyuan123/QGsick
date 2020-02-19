@@ -1,7 +1,7 @@
 import QQMapWX from '../../libs/qqmap-wx-jssdk';
 
-let transform = function() {
-  let qqmapsdk = new QQMapWX({ key: 'SKQBZ-WLQ66-C6QS4-M3EBB-TMVQJ-6JFM6' });
+let transform = function () {
+  let qqmapsdk = new QQMapWX({key: 'SKQBZ-WLQ66-C6QS4-M3EBB-TMVQJ-6JFM6'});
   let lat = '';
   let lng = '';
 
@@ -11,7 +11,7 @@ let transform = function() {
       qqmapsdk.geocoder({
         //获取表单传入地址
         address: address, //地址参数，例：固定地址，address: '北京市海淀区彩和坊路海淀西大街74号'
-        success: function(res) {//成功后的回调
+        success: function (res) {//成功后的回调
           console.log(res);
           let result = res.result;
           _this.setData({
@@ -20,22 +20,47 @@ let transform = function() {
           })
           resolve({
             lat: result.location.lat,
-            lng:  result.location.lng
+            lng: result.location.lng
           })
         },
-        fail: function(error) {
+        fail: function (error) {
           reject(error)
           console.error(error);
         },
-        complete: function(res) {
+        complete: function (res) {
           console.log(res);
         }
       });
     }))
   }
 
+  function pointToAddress(lat, lng) {
+    let _this = this;
+    console.log({
+      lat: lat,
+      lon: lng
+    })
+    return new Promise(((resolve, reject) => {
+      qqmapsdk.reverseGeocoder({
+        //Object格式
+        location: {
+          latitude: lat,
+          longitude: lng
+        },
+        success: (res) => {
+          resolve(res)
+          console.log(res)
+        },
+        fail: (error) => {
+          reject(error)
+        }
+      })
+    }))
+  }
+
   return {
-    getPoint: transformAddress
+    getPoint: transformAddress,
+    getAddress: pointToAddress
   };
 }();
 
