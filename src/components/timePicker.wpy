@@ -186,16 +186,6 @@ import wepy from 'wepy';
 
 export default class TimePicker extends wepy.component {
   props = {
-    startTime: {
-      type: String,
-      default: '',
-      twoWay: true
-    },
-    endTime: {
-      type: String,
-      default: '',
-      twoWay: true
-    },
     showPicker: {
       type: Boolean,
       default: true, // 设定选中项
@@ -205,7 +195,7 @@ export default class TimePicker extends wepy.component {
   };
 
   data = {
-    years: new Array(250),
+    years: [2019, 2020],
     months: new Array(13),
     days: new Array(40),
     hours: new Array(13),
@@ -213,7 +203,7 @@ export default class TimePicker extends wepy.component {
     choose_year: '',
     yearIndex: 0,
 
-    year: 2020,
+    year: 2019,
     month: 10,
     day: 10,
     hour: 10,
@@ -222,49 +212,56 @@ export default class TimePicker extends wepy.component {
     endDay: 10,
     endHour: 10,
 
+    currentYear: new Date().getFullYear(),
+    currentMonth: new Date().getMonth(),
+    currentDay: new Date().getDate(),
+    currentHour: new Date().getHours(),
+
     value: [
-      100,
       0,
-      new Date().getMonth() - 1,
       0,
-      new Date().getDate() - 1,
+      this.currentMonth - 1,
       0,
-      new Date().getHours(),
+      this.currentDay - 1,
+      0,
+      this.currentHour,
       0
     ],
     endValue: [
-      101,
+      1,
       0,
-      new Date().getMonth() - 1,
+      this.currentMonth - 1,
       0,
-      new Date().getDate() - 1,
+      this.currentDay - 1,
       0,
-      new Date().getHours(),
+      this.currentHour,
       0
     ],
 
-    startPicker: true
+    startPicker: true,
+    startTime: '',
+    endTime: ''
   };
   // 设置初始值
   setTimeDate() {
     const date = new Date();
     let _yearIndex = 0;
-    this.years = [];
+    // this.years = [];
     this.months = [];
     this.days = [];
     this.hours = [];
     // 默认设置
     let _defaultYear = this.time ? this.time.split('-')[0] : 0;
-    // 获取年
-    for (let i = date.getFullYear() - 100; i <= date.getFullYear() + 100; i++) {
-      this.years.push('' + i);
-      // 默认设置的年的位置
-      if (_defaultYear && i === parseInt(_defaultYear)) {
-        this.yearIndex = _yearIndex;
-        this.choose_year = _defaultYear;
-      }
-      _yearIndex = _yearIndex + 1;
-    }
+    // // 获取年
+    // for (let i = date.getFullYear() - 100; i <= date.getFullYear() + 100; i++) {
+    //   this.years.push('' + i);
+    //   // 默认设置的年的位置
+    //   if (_defaultYear && i === parseInt(_defaultYear)) {
+    //     this.yearIndex = _yearIndex;
+    //     this.choose_year = _defaultYear;
+    //   }
+    //   _yearIndex = _yearIndex + 1;
+    // }
     // 获取月份
     for (let i = 1; i <= 12; i++) {
       if (i < 10) {
@@ -391,21 +388,80 @@ export default class TimePicker extends wepy.component {
         this.month = month;
         this.day = day;
         this.hour = hour;
-        this.startTime = year + '-' + month + '-' + day + ' ' + hour;
+        this.startTime = year + '-' + month + '-' + day + ' ' + hour + ':00:00';
       } else {
         this.endYear = year;
         this.endMonth = month;
         this.endDay = day;
         this.endHour = hour;
-        this.endTime = year + '-' + month + '-' + day + ' ' + hour;
+        this.endTime = year + '-' + month + '-' + day + ' ' + hour + ':00:00';
       }
 
       this.$apply();
     },
     bindClose() {
       this.showPicker = false;
+      this.$emit('createTrack', {
+        startTime:
+          this.currentYear +
+          '-' +
+          this.currentMonth +
+          '-' +
+          this.currentDay +
+          ' ' +
+          '00:00:00',
+        endTime:
+          this.currentYear +
+          '-' +
+          this.currentMonth +
+          '-' +
+          this.currentDay +
+          ' ' +
+          '23:59:00'
+      });
     },
-    bindSure() {},
+    bindSure() {
+      if (this.startTime == "") {
+        this.startTime =
+          this.currentYear +
+          '-' +
+          this.currentMonth +
+          '-' +
+          this.currentDay +
+          ' ' +
+          '00:00:00';
+      }
+      if (this.endTime == "") {
+        this.currentYear +
+          '-' +
+          this.currentMonth +
+          '-' +
+          this.currentDay +
+          ' ' +
+          '23:59:00';
+      }
+      console.log(this.month,parseInt(this.endMonth),this.day,this.endDay,this.hour,this.endHour);
+      if (
+        parseInt(this.year) < parseInt(this.endYear) ||
+        (parseInt(this.year) == parseInt(this.endYear) && parseInt(this.month) < parseInt(this.endMonth)) ||
+        (parseInt(this.year) == parseInt(this.endYear) && parseInt(this.month) == parseInt(this.endMonth) && parseInt(this.day) < parseInt(this.endDay)) ||
+        (parseInt(this.year) == parseInt(this.endYear) && parseInt(this.month) == parseInt(this.endMonth) && parseInt(this.day) == parseInt(this.endDay) && parseInt(this.hour) <= parseInt(this.endHour))
+      ) {
+        this.showPicker = false;
+             console.log(this.startTime,this.endTime);
+        this.$emit('createTrack', {
+          startTime: this.startTime,
+          endTime: this.endTime
+        });
+      } else {
+        wx.showToast({
+          title: '时间区间设置错误',
+          icon: 'none',
+          duration: 2000
+        });
+        return false;
+      }
+    },
     chooseStart() {
       this.startPicker = true;
     },
@@ -421,8 +477,8 @@ export default class TimePicker extends wepy.component {
     if (!this.time) {
       // 默认显示当前日期
       let date = new Date();
-      this.year = date.getFullYear();
-      this.endYear = date.getFullYear() + 1;
+      this.year = 2019;
+      this.endYear = 2020;
       if (date.getMonth() == 11 || date.getMonth() == 12) {
         this.month = date.getMonth();
         this.endMonth = date.getMonth();
@@ -467,7 +523,7 @@ export default class TimePicker extends wepy.component {
       this.multiArray[2] = this.setDays(this.choose_year, date.getMonth());
       console.log(this.multiArray);
       this.value = [
-        100,
+        0,
         0,
         date.getMonth() - 1,
         0,
@@ -477,7 +533,7 @@ export default class TimePicker extends wepy.component {
         0
       ];
       this.endValue = [
-        101,
+        1,
         0,
         date.getMonth() - 1,
         0,

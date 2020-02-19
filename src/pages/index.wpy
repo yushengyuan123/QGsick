@@ -28,8 +28,8 @@
 </style>
 <template>
   <view class="map_container">
-    <!--        <intiAlert></intiAlert>-->
-    <header :cityInfo.sync="citySelect"></header>
+<!--        <intiAlert></intiAlert>-->
+    <header :cityInfo.sync="czitySelect"></header>
     <infectAlert :isVisible.sync="showInfectWarning"></infectAlert>
     <timePicker :startTime.sync='startTime' :endTime.sync='endTime' :showPicker.sync="showPicker"
                 wx:if="{{showPicker}}"></timePicker>
