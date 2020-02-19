@@ -4,13 +4,13 @@
 .time-picker {
   display: block;
   position: fixed;
-  top: 37%;
-  left: 13%;
+  top: 27%;
+  left: 14%;
   height: rpx(600);
   width: rpx(450);
   padding: 1px 5%;
   margin-left: -rpx(275);
-  margin-top: -rpx((200));
+  margin-top: -rpx((300));
   background-color: white;
   border-radius: 6pt;
   border: 1px solid rgba(0, 0, 0, 0.12);
